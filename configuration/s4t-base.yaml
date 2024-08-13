@@ -1,0 +1,6 @@
+s4t-auth-data:
+  ip: "172.17.4.0"
+  username: "admin"
+  password: "0pensatck"
+domain:
+  name: "default"
