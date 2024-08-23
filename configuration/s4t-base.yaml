@@ -1,6 +1,11 @@
 s4t-auth-data:
-  ip: "172.17.4.0"
-  username: "admin"
-  password: "0pensatck"
-domain:
-  name: "default"
+  ip: "100.115.102.7"
+  port: 8812
+  auth_port: 5000
+  username: admin
+  password: "0penstack"
+  temp_auth_token: "gAAAAABmyKKTrtlmLMQdwdUcbJANevyvy3rM4BYdIbGEbu7wb4yA4PeczFo_N5iztqOn516ishZ8eVcG-AzsW84Kx3llR2tx-I7FY4LjFmWhKwahfgdGTcHa8vA5vLRumjqMsqmmith1r-iaK_ycKiFJMNmlqimSajaJBnPXZWZQh9NGT3_Ep_g"
+  domain:
+  name: default
+
+
