@@ -4,11 +4,14 @@ package s4t
 import (
 	"net/http"
 	"time"
+	"fmt"
+	"s4t-sdk-module/pkg/read_conf"
 )
 
 type Client struct {
 	HTTPClient *http.Client
 	AuthToken string
+	Port string
 	Endpoint string
 	Timeout time.Duration
 }
@@ -39,3 +42,22 @@ func WithTimeout(timeout time.Duration) ClientOption {
 		c.Timeout = timeout
 	}
 }
+
+func GetClientConnection() (*Client, error) {
+	auth_req, err := read_config.ReadConfiguration()
+	
+	if err != nil {
+		return nil, fmt.Errorf("Error reading file: %v", err)
+	}
+
+	client := NewClient("http://" + auth_req.S4tAuthData.Ip)
+	client.AuthToken = auth_req.S4tAuthData.Token	
+	client.Port = auth_req.S4tAuthData.Port
+
+	return client, nil
+
+
+
+}
+
+
