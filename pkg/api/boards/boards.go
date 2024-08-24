@@ -63,11 +63,13 @@ type Location struct {
 	UpdatedAt  interface{} `json:"updated_at,omitempty"`
 }
 
-
-type Sensors struct {
-	name string
+type Action struct {
+	ServiceAction string `json:"service_action"`
 }
 
+type Sensors struct {
+	Name string
+}
 
 func ListBoards(client *s4t.Client) ([]Board, error) {
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" , nil)

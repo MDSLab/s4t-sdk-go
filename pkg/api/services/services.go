@@ -177,7 +177,6 @@ func DeleteService(client *s4t.Client, service_id string) error {
 	return nil
 }
 
-
 func GetBoardExposedServices(client *s4t.Client, board_id string) ([]Service, error) {
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" + board_id + "/services", nil)
 
@@ -212,3 +211,61 @@ func GetBoardExposedServices(client *s4t.Client, board_id string) ([]Service, er
 
     return result.Services, nil
 }
+
+func RestoreService(client *s4t.Client, board_id string) error {
+	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" + board_id + "/services/restore", nil)
+
+	if err != nil {
+		return fmt.Errorf("failed to create a request: %v", err)
+	}
+
+	req.Header.Set("X-Auth-Token", client.AuthToken)
+
+	resp, err := client.HTTPClient.Do(req)
+
+	if err != nil {
+		return fmt.Errorf("Request failed: %v", err)
+	}
+
+	defer resp.Body.Close()
+	
+	
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+
+	return nil
+} 
+
+func PerfomActionOnService(
+	client *s4t.Client, board_id string, 
+	service_id string, action boards.Action) error { 
+
+	jsonBody, err := json.Marshal(action)
+	if err != nil {
+		return fmt.Errorf("Error marshalling JSON: %v", err)
+		
+	}
+	req, err := http.NewRequest("POST", 
+		client.Endpoint + ":" + client.Port + "/v1/boards/" + board_id + "/services" + service_id + "/action", 
+		bytes.NewBuffer(jsonBody))
+	
+	if err != nil {
+		return fmt.Errorf("failed to create a request: %v", err)
+	}
+
+	req.Header.Set("X-Auth-Token", client.AuthToken)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := client.HTTPClient.Do(req)
+
+	if err != nil {
+		return fmt.Errorf("Request failed: %v", err)
+	}
+
+	defer resp.Body.Close()
+	
+	return nil
+}
+
+

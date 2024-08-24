@@ -225,6 +225,43 @@ func TestBoardExposedServices(t *testing.T) {
 	}
 }
 
+func TestRestoreBoardService(t *testing.T) {
+	client, err := s4t.GetClientConnection()
+
+	if err != nil {
+		t.Errorf("Error getting connection: %v", err)
+	}	
+
+	err = services.RestoreService(client, board_id)
+	
+	if err != nil {
+		t.Errorf("Error getting service info: %v", err)
+	}
+}
+
+/*
+func TestPerformActionOnService(t *testing.T) {
+	client, err := s4t.GetClientConnection()
+
+	if err != nil {
+		t.Errorf("Error getting connection: %v", err)
+	}	
+
+	action := boards.Action {
+		ServiceAction: "test",
+	}
+
+	err = services.PerfomActionOnService(client, board_id, service_id, action)
+	
+	if err != nil {
+		t.Errorf("Error getting service info: %v", err)
+	}
+
+
+}
+*/
+
+
 
 /*
 // ERROR WHEN CALLING DELETE "catching classes that do not inherit from BaseException is not allowed\"
