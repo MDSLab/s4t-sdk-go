@@ -50,8 +50,6 @@ func (c *Client) Authenticate (client *Client, auth_req *read_config.AuthRequest
 
 	jsonBody, err := json.Marshal(&authetication_data)
 	
-	fmt.Printf("%v", string(jsonBody))
-
 	if err != nil {
 		return "",fmt.Errorf("Error marshaling to JSON: %d\n", err)
 		
@@ -81,8 +79,6 @@ func (c *Client) Authenticate (client *Client, auth_req *read_config.AuthRequest
 	if token == "" {
 		return "", fmt.Errorf("No token found in the response")
 	}
-	
-	fmt.Printf("%v",resp)
 
 	return token, nil
 }

@@ -4,7 +4,6 @@ s4t-auth-data:
   auth_port: 5000
   username: admin
   password: "0penstack!"
-  temp_auth_token: "gAAAAABmyfzsSNOSaV5EiY5esAMqRlMSo5krMEWfXtccrsaP3O_JuXyJH_pHi41avWel2rU6d1FaqQMyNot7pXHYniNrZkJEcsSb6NEcDiKwCNeAxpp9IDal1glLRKLZACqyXMhWs-UN2Z1fK7DHGcd60qbfvhS2-YtbS3l7Yfv2_Lak24uz73Y" 
 domain:
   name: default
 

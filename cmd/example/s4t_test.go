@@ -6,6 +6,7 @@ import (
 	"s4t-sdk-module/pkg/api/boards"
 	"testing"
 	"s4t-sdk-module/pkg/api/services"
+	"s4t-sdk-module/pkg/api/plugins"
 )
 
 var service_id = ""
@@ -271,7 +272,67 @@ func TestPerformActionOnService(t *testing.T) {
 }
 */
 
+func TestGetPlugins(t *testing.T) {
+	c := s4t.Client{}
+	client, err := c.GetClientConnection()
 
+	if err != nil {
+		t.Errorf("Error getting connection: %v", err)
+	}	
+
+	resp, err := plugins.GetPlugins(client)
+	
+	if err != nil {
+		t.Errorf("Error getting plugin info: %v", err)
+	}
+
+	for _, plugin := range resp {
+		fmt.Printf("Plugin Name: %s, Status: %s\n", plugin.Name, plugin.UUID)
+	}
+
+}
+
+func TestGetPlugin(t *testing.T) {
+	c := s4t.Client{}
+	client, err := c.GetClientConnection()
+
+	if err != nil {
+		t.Errorf("Error getting connection: %v", err)
+	}	
+
+	resp, err := plugins.GetPlugin(client, "b5217ab0-82e9-46c0-94d6-1c0d79437db6")
+	
+	if err != nil {
+		t.Errorf("Error getting plugin info: %v", err)
+	}
+
+	fmt.Printf("Plugin Name: %s, Status: %s\n", resp.Name, resp.UUID)
+}
+
+// CANNOT LOAD CODE IN THE BASE CLASS
+func TestCreatePlugin(t *testing.T) {	
+	c := s4t.Client{}
+	client, err := c.GetClientConnection()
+
+	if err != nil {
+		t.Errorf("Error getting connection: %v", err)
+	}	
+	
+	plugin := plugins.Plugin{
+		Name: "Test-plugin-s4t",
+		Public: true,
+		Owner: "0dfebefa1edc4e9d98dbb8acf9f5c285",    
+		Callable: true, 
+	}
+
+	resp, err := plugins.CreatePlugin(client, plugin)
+	
+	if err != nil {
+		t.Errorf("Error creating plugin: %v", err)
+	}
+
+	fmt.Printf("Plugin name: %v", resp.Name)
+}
 
 /*
 // ERROR WHEN CALLING DELETE "catching classes that do not inherit from BaseException is not allowed\"
