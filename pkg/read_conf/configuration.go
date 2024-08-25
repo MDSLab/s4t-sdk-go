@@ -3,25 +3,60 @@ package read_config
 import (
 	"fmt"
 	"os"
-
 	"gopkg.in/yaml.v3"
 )
 
-type AuthRequest struct {
+type AuthRequest_1 struct {
+	Identity Identity `json:"identity"`
+	Scope Scope `json:"scope"`
+}
+
+type Identity struct {
+	Methods []string `json:"methods"`
+	Password Password `json:"password"`
+
+}
+
+type Password struct {
+	User User `json:"user"`
+}
+
+type User struct {
+	Name string `json:"name"`
+	Password string `json:"password"`
+	Domain Id `json:"domain"`
+}
+
+type Id struct {
+	Id string`json:"id"`
+}
+
+type Scope struct {
+	Project Project `json:"project"`
+
+}
+
+type Project struct {
+	Name string `json:"name"`
+	Domain Id `json:"domain"`
+}
+
+type ConfigData struct {
 	S4tAuthData struct {
 		Ip string `yaml:"ip"`
 		Port string `yaml:"port"`
+		AuthPort string `yaml:"auth_port"`
 		Token string `yaml:"temp_auth_token"` 
-		Username string `yaml:"username" json:"username"`
-		Password string `yaml:"password" json:"password"`
+		Username string `yaml:"username"`
+		Password string `yaml:"password"`
 	} `yaml:"s4t-auth-data"`
 	Domain struct {
-		DomainName string `yaml:"name" json:"name"`
+		DomainName string `yaml:"name"` 
 	} `yaml:"domain"`
 }
 
-func ReadConfiguration() (*AuthRequest,error) {
-	config := &AuthRequest{}
+func ReadConfiguration() (*ConfigData,error) {
+	config := &ConfigData{}
 	file, err := os.Open("../../configuration/s4t-base.yaml") 
 	
 	if err != nil {
@@ -40,6 +75,30 @@ func ReadConfiguration() (*AuthRequest,error) {
     // fmt.Printf("Domain: %s\n", config.Domain.DomainName)
 	
 	return config, nil
+}
 
-
+func FormatAuthRequ(name string, password string, id string) *AuthRequest_1 {
+	auth_req := AuthRequest_1{ // HORRIBLE
+		Identity: Identity{
+			Methods: []string{"password"},
+			Password: Password{
+				User: User{
+					Name: name,
+					Password: password,
+					Domain: Id{
+						Id: id,	
+					},
+				},
+			},
+		},
+		Scope: Scope{
+			Project: Project{
+				Name: name,
+				Domain: Id{
+					Id: id,
+				},
+			},	
+		},	
+	} 
+	return &auth_req
 }

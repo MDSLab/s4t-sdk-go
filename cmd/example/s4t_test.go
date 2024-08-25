@@ -11,8 +11,10 @@ import (
 var service_id = ""
 var board_id = "c910e7f1-74d0-4f76-ae6a-a46c1da0d92d"
 
+
 func TestGetBoards(t *testing.T) {
-	client, err := s4t.GetClientConnection()
+	c := s4t.Client{}
+	client, err := c.GetClientConnection()
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -30,7 +32,8 @@ func TestGetBoards(t *testing.T) {
 }
 
 func TestGetBoardDetails(t *testing.T) {
-	client, err := s4t.GetClientConnection()
+	c := s4t.Client{}
+	client, err := c.GetClientConnection()
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -87,7 +90,8 @@ func TestCreateBoard(t *testing.T) {
 */
 
 func TestPatchBoard(t *testing.T) {
-	client, err := s4t.GetClientConnection()
+	c := s4t.Client{}
+	client, err := c.GetClientConnection()
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -130,7 +134,8 @@ func TestBoardAction(t *testing.T) {
 */
 
 func TestGetServices(t *testing.T) {
-	client, err := s4t.GetClientConnection()
+	c := s4t.Client{}
+	client, err := c.GetClientConnection()
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -148,7 +153,8 @@ func TestGetServices(t *testing.T) {
 }
 
 func TestCreateService(t *testing.T) {
-	client, err := s4t.GetClientConnection()
+	c := s4t.Client{}
+	client, err := c.GetClientConnection()
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -173,7 +179,8 @@ func TestCreateService(t *testing.T) {
 }
 
 func TestPatchService(t *testing.T) {
-	client, err := s4t.GetClientConnection()
+	c := s4t.Client{}
+	client, err := c.GetClientConnection()
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -193,7 +200,8 @@ func TestPatchService(t *testing.T) {
 }
 
 func TestDeleteService(t *testing.T) {
-	client, err := s4t.GetClientConnection()
+	c := s4t.Client{}
+	client, err := c.GetClientConnection()
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -208,7 +216,8 @@ func TestDeleteService(t *testing.T) {
 }
 
 func TestBoardExposedServices(t *testing.T) {
-	client, err := s4t.GetClientConnection()
+	c := s4t.Client{}
+	client, err := c.GetClientConnection()
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -226,7 +235,8 @@ func TestBoardExposedServices(t *testing.T) {
 }
 
 func TestRestoreBoardService(t *testing.T) {
-	client, err := s4t.GetClientConnection()
+	c := s4t.Client{}
+	client, err := c.GetClientConnection()
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
