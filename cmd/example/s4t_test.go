@@ -11,7 +11,7 @@ import (
 
 var service_id = ""
 var board_id = "c910e7f1-74d0-4f76-ae6a-a46c1da0d92d"
-
+var plugin_id = ""
 
 func TestGetBoards(t *testing.T) {
 	c := s4t.Client{}
@@ -318,11 +318,11 @@ func TestCreatePlugin(t *testing.T) {
 		t.Errorf("Error getting connection: %v", err)
 	}	
 	
-	plugin := plugins.Plugin{
+	plugin := plugins.PluginReq{
 		Name: "Test-plugin-s4t",
-		Public: true,
-		Owner: "0dfebefa1edc4e9d98dbb8acf9f5c285",    
-		Callable: true, 
+		Parameters: map[string]interface{}{},
+		Code:"from iotronic_lightningrod.plugins import Plugin\n\nfrom oslo_log import log as logging\n\nLOG = logging.getLogger(__name__)\n\n\n# User imports\n\n\nclass Worker(Plugin.Plugin):\n    def __init__(self, uuid, name, q_result, params=None):\n        super(Worker, self).__init__(uuid, name, q_result, params)\n\n    def run(self):\n        LOG.info(\"Input parameters: \" + str(self.params))\n        LOG.info(\"Plugin \" + self.name + \" process completed!\")\n        self.q_result.put(\"ZERO RESULT\")",
+		// Description: "A generic test plugin",
 	}
 
 	resp, err := plugins.CreatePlugin(client, plugin)
@@ -330,9 +330,107 @@ func TestCreatePlugin(t *testing.T) {
 	if err != nil {
 		t.Errorf("Error creating plugin: %v", err)
 	}
-
+	
+	plugin_id = resp.UUID
 	fmt.Printf("Plugin name: %v", resp.Name)
 }
+
+func TestPatchPlugin(t *testing.T) {
+	c := s4t.Client{}
+	client, err := c.GetClientConnection()
+
+	if err != nil {
+		t.Errorf("Error getting connection: %v", err)
+	}	
+	
+	updated_service_data := map[string]interface{}{
+		"name": "test-plugin-generic-patched",
+	}
+
+	resp, err := plugins.PacthPlugin(client, plugin_id, updated_service_data)
+	
+	if err != nil {
+		t.Errorf("Error patching plugin info: %v", err)
+	}
+
+	fmt.Printf("Plugin Name: %s\n", resp.Name)
+}
+
+func TestInjectBoardPlugin(t *testing.T) {
+	c := s4t.Client{}
+	client, err := c.GetClientConnection()
+
+	if err != nil {
+		t.Errorf("Error getting connection: %v", err)
+	}	
+
+	data := map[string] interface{} {
+		"plugin": plugin_id,
+		// "onboot": "yes",
+		// "force": "yes",
+
+	} 
+
+	err = plugins.InjectPLuginBoard(client, board_id, data)
+	
+	if err != nil {
+		t.Errorf("Error getting plugin info: %v", err)
+	}
+}
+
+func TestDeleteBoardPlugin(t *testing.T) {
+	c := s4t.Client{}
+	client, err := c.GetClientConnection()
+
+	if err != nil {
+		t.Errorf("Error getting connection: %v", err)
+	}	
+	
+	err = plugins.RemoveInjectedPlugin(client, plugin_id, board_id)
+	
+	if err != nil {
+		t.Errorf("Error deleting plugin: %v", err)
+	}
+}
+
+
+func TestDeletePLugin(t *testing.T) {
+	c := s4t.Client{}
+	client, err := c.GetClientConnection()
+
+	if err != nil {
+		t.Errorf("Error getting connection: %v", err)
+	}	
+	
+	err = plugins.DeletePlugin(client, plugin_id)
+	
+	if err != nil {
+		t.Errorf("Error deleting plugin: %v", err)
+	}
+
+}
+
+func TestGetBoardPlugins(t *testing.T) {
+	c := s4t.Client{}
+	client, err := c.GetClientConnection()
+
+	if err != nil {
+		t.Errorf("Error getting connection: %v", err)
+	}	
+
+	resp, err := plugins.GetBoardPlugins(client, board_id)
+	
+	if err != nil {
+		t.Errorf("Error getting plugin info: %v", err)
+	}
+
+	for _, plugin := range resp {
+		fmt.Printf("Plugin Name: %s, Status: %s\n", plugin.Name, plugin.UUID)
+	}
+} 
+
+
+
 
 /*
 // ERROR WHEN CALLING DELETE "catching classes that do not inherit from BaseException is not allowed\"
