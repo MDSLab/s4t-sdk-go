@@ -1,9 +1,9 @@
 package plugins
 
 import (
-	"s4t-sdk-module/pkg"
-	"s4t-sdk-module/pkg/api/boards"
-	"s4t-sdk-module/pkg/utils"
+	"github.com/MIKE9708/s4t-sdk-go/pkg"
+	"github.com/MIKE9708/s4t-sdk-go/pkg/api/boards"
+	"github.com/MIKE9708/s4t-sdk-go/pkg/utils"
 	"bytes"
 	"encoding/json"
 	"fmt"

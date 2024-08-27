@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"s4t-sdk-module/pkg"
-	"s4t-sdk-module/pkg/utils"
+	"github.com/MIKE9708/s4t-sdk-go/pkg"
+	"github.com/MIKE9708/s4t-sdk-go/pkg/utils"
 )
 
 type Board struct {

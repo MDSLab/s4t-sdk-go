@@ -3,7 +3,7 @@ package s4t
 import (
 	"fmt"
 	"net/http"
-	"s4t-sdk-module/pkg/read_conf"
+	"github.com/MIKE9708/s4t-sdk-go/pkg/read_conf"
 	"encoding/json"
 	"time"
 	"bytes"

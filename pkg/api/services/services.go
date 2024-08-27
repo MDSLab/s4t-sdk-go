@@ -6,9 +6,9 @@ import (
 	"bytes"
 	"io"
 	"net/http"
-	"s4t-sdk-module/pkg"
-	"s4t-sdk-module/pkg/utils"
-	"s4t-sdk-module/pkg/api/boards"
+	"github.com/MIKE9708/s4t-sdk-go/pkg"
+	"github.com/MIKE9708/s4t-sdk-go/pkg/utils"
+	"github.com/MIKE9708/s4t-sdk-go/pkg/api/boards"
 )
 
 type Service struct{

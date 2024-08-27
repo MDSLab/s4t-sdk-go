@@ -2,10 +2,10 @@ package example
 
 import (
 	"fmt"
-	"s4t-sdk-module/pkg"
-	"s4t-sdk-module/pkg/api/boards"
-	"s4t-sdk-module/pkg/api/plugins"
-	"s4t-sdk-module/pkg/api/services"
+	"github.com/MIKE9708/s4t-sdk-go/pkg"
+	"github.com/MIKE9708/s4t-sdk-go/pkg/api/boards"
+	"github.com/MIKE9708/s4t-sdk-go/pkg/api/plugins"
+	"github.com/MIKE9708/s4t-sdk-go/pkg/api/services"
 	"testing"
 
 )

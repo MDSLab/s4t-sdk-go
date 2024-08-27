@@ -1,4 +1,4 @@
-module s4t-sdk-module
+module github.com/MIKE9708/s4t-sdk-go 
 
 go 1.22.5
 
