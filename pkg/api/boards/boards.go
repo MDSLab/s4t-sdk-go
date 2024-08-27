@@ -25,7 +25,7 @@ type Board struct {
 	Links []Link `json:"links,omitempty"`
 	Location []Location  `json:"location"`
 }
-func (b Board) Keys() []string {
+func (b *Board) Keys() []string {
     return  []string{
 		"uuid", "code", 
 		"status", "name", 
@@ -71,7 +71,7 @@ type Sensors struct {
 	Name string
 }
 
-func (b Board)ListBoards(client *s4t.Client) ([]Board, error) {
+func (b *Board)ListBoards(client *s4t.Client) ([]Board, error) {
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" , nil)
 
 	if err != nil {
@@ -111,7 +111,7 @@ func (b Board)ListBoards(client *s4t.Client) ([]Board, error) {
 }
 
 
-func (b Board)GetBoardDetail(client *s4t.Client, board_id string) (*Board, error) {
+func (b *Board)GetBoardDetail(client *s4t.Client, board_id string) (*Board, error) {
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" + board_id, nil)
 
 	if err != nil {
@@ -144,7 +144,7 @@ func (b Board)GetBoardDetail(client *s4t.Client, board_id string) (*Board, error
 }
 
 
-func (b Board)GetBoardConf(client *s4t.Client, board_id string) ([]byte, error){
+func (b *Board)GetBoardConf(client *s4t.Client, board_id string) ([]byte, error){
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" + board_id + "/conf", nil)
 
 	if err != nil {
@@ -171,7 +171,7 @@ func (b Board)GetBoardConf(client *s4t.Client, board_id string) ([]byte, error){
 }
 
 
-func (b Board)getSensors(client s4t.Client) (*Sensors, error) {
+func (b *Board)getSensors(client s4t.Client) (*Sensors, error) {
 	req, err := http.NewRequest("GET", client.Endpoint + "/v1/boards/sensors/", nil)
 
 	if err != nil {
@@ -202,7 +202,7 @@ func (b Board)getSensors(client s4t.Client) (*Sensors, error) {
     return &result, nil
 }
 
-func (b Board)getBoardPosHistory(client s4t.Client, board_id string) (interface {}, error){
+func (b *Board)getBoardPosHistory(client s4t.Client, board_id string) (interface {}, error){
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" + board_id + "/position", nil)
 
 	if err != nil {
@@ -232,7 +232,7 @@ func (b Board)getBoardPosHistory(client s4t.Client, board_id string) (interface 
     return result, nil
 }
 
-func (b Board)getBoardConfFile(client s4t.Client, board_id string) (string,error) {
+func (b *Board)getBoardConfFile(client s4t.Client, board_id string) (string,error) {
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" + board_id + "/conf", nil)
 
 	if err != nil {
@@ -263,7 +263,7 @@ func (b Board)getBoardConfFile(client s4t.Client, board_id string) (string,error
 }
 
 
-func (b Board)DeleteBoard(client *s4t.Client, board_id string) error {
+func (b *Board)DeleteBoard(client *s4t.Client, board_id string) error {
 	req, err := http.NewRequest("DELETE", client.Endpoint + ":" + client.Port + "/v1/boards/" + board_id, nil)
 		if err != nil {
 		return fmt.Errorf("failed to create a request: %v", err)
@@ -289,7 +289,7 @@ func (b Board)DeleteBoard(client *s4t.Client, board_id string) error {
 }
 
 
-func (b Board)CreateBoard(client *s4t.Client, board Board) (*Board, error) {
+func (b *Board)CreateBoard(client *s4t.Client, board Board) (*Board, error) {
 	jsonBody, err := json.Marshal(board)
 	if err != nil {
 		return nil, fmt.Errorf("Error marshalling JSON: %v", err)
@@ -327,7 +327,7 @@ func (b Board)CreateBoard(client *s4t.Client, board Board) (*Board, error) {
 	return &board, nil
 }
 
-func (b Board)AddNewPosition(client *s4t.Client, board_id string, position Location) error {
+func (b *Board)AddNewPosition(client *s4t.Client, board_id string, position Location) error {
 	jsonBody, err := json.Marshal(position)
 	
 	if err != nil {
@@ -360,7 +360,7 @@ func (b Board)AddNewPosition(client *s4t.Client, board_id string, position Locat
 
 }
 
-func (b Board)PatchBoard(client *s4t.Client, board_id string, data map[string]interface{}) (*Board, error) {
+func (b *Board)PatchBoard(client *s4t.Client, board_id string, data map[string]interface{}) (*Board, error) {
 	board := Board{}
 	board_keys := board.Keys()
 	compare_result := utils.CompareFields(data, board_keys)
@@ -409,7 +409,7 @@ func (b Board)PatchBoard(client *s4t.Client, board_id string, data map[string]in
 }
 
 
-func (b Board)PerformBoardAction(client *s4t.Client, board_id string, action map[string] interface{}) error {
+func (b *Board)PerformBoardAction(client *s4t.Client, board_id string, action map[string] interface{}) error {
 	jsonBody, err := json.Marshal(action)
 
 	if err != nil {
