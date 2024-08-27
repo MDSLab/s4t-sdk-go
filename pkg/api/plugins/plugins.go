@@ -19,7 +19,7 @@ type PluginReq struct {
 	Version string `json:"version,omitempty"`
 }
 
-func (b PluginReq) Keys() []string {
+func (b *PluginReq) Keys() []string {
     return  []string{
 		"name", "parameters", 
 		"code", "version", 
@@ -36,7 +36,7 @@ type Plugin struct {
 }
 
 
-func GetPlugins(client *s4t.Client) ([]Plugin, error) {
+func (b *Plugin)GetPlugins(client *s4t.Client) ([]Plugin, error) {
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" , nil)
 
 	if err != nil {
@@ -73,7 +73,7 @@ func GetPlugins(client *s4t.Client) ([]Plugin, error) {
 	return result.Plugins, nil
 }
 
-func GetPlugin(client *s4t.Client, plugin_id string) (*Plugin ,error) {
+func (b *Plugin)GetPlugin(client *s4t.Client, plugin_id string) (*Plugin ,error) {
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/plugins/" + plugin_id , nil)
 
 	if err != nil {
@@ -111,7 +111,7 @@ func GetPlugin(client *s4t.Client, plugin_id string) (*Plugin ,error) {
 }
 
 
-func CreatePlugin(client *s4t.Client, plugin PluginReq) (*Plugin, error) {
+func (b *Plugin)CreatePlugin(client *s4t.Client, plugin PluginReq) (*Plugin, error) {
 	jsonBody, err := json.Marshal(plugin)
 	fmt.Printf("%v", string(jsonBody))
 	if err != nil {
@@ -150,7 +150,7 @@ func CreatePlugin(client *s4t.Client, plugin PluginReq) (*Plugin, error) {
 	return &result, nil
 }
 
-func DeletePlugin(client *s4t.Client, plugin_id string) error {
+func (b *Plugin)DeletePlugin(client *s4t.Client, plugin_id string) error {
 	req, err := http.NewRequest("DELETE", client.Endpoint + ":" + client.Port + "/v1/plugins/" + plugin_id, nil)
 	
 	if err != nil {
@@ -174,7 +174,7 @@ func DeletePlugin(client *s4t.Client, plugin_id string) error {
 	return nil
 }
 
-func PacthPlugin(client *s4t.Client, plugin_id string, data map[string] interface{}) (*Plugin, error) {
+func (b *Plugin)PacthPlugin(client *s4t.Client, plugin_id string, data map[string] interface{}) (*Plugin, error) {
 	plugin := PluginReq{}
 	service_keys := plugin.Keys()
 	compare_result := utils.CompareFields(data, service_keys)
@@ -222,7 +222,7 @@ func PacthPlugin(client *s4t.Client, plugin_id string, data map[string] interfac
 	return &result, nil
 } 
 
-func GetBoardPlugins(client *s4t.Client, board_id string) ([]Plugin, error) {
+func (b *Plugin)GetBoardPlugins(client *s4t.Client, board_id string) ([]Plugin, error) {
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/"  + board_id + "/plugins", nil)
 
 	if err != nil {
@@ -259,7 +259,7 @@ func GetBoardPlugins(client *s4t.Client, board_id string) ([]Plugin, error) {
 	return result.Plugins, nil
 }
 
-func InjectPLuginBoard(client *s4t.Client, board_id string, data map[string] interface{}) error {
+func (b *Plugin)InjectPLuginBoard(client *s4t.Client, board_id string, data map[string] interface{}) error {
 	jsonBody, err := json.Marshal(data)
 
 	if err != nil {
@@ -297,7 +297,7 @@ func GetPluginStatus(client *s4t.Client) {
 // 405
 func GetPluginsLog(client *s4t.Client) {}
 
-func RemoveInjectedPlugin(client *s4t.Client, plugin_id string, board_id string) error {
+func (b *Plugin)RemoveInjectedPlugin(client *s4t.Client, plugin_id string, board_id string) error {
 	req, err := http.NewRequest("DELETE", client.Endpoint + ":" + client.Port + "/v1/boards/" + board_id + "/plugins/"  + plugin_id, nil)
 	
 	if err != nil {
