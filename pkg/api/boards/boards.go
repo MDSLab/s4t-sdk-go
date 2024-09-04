@@ -21,7 +21,7 @@ type Board struct {
 	Agent string `json:"agent"`
 	Wstunip string `json:"wstun_ip,omitempty"`
 	Session string `json:"session"`
-	Fleet interface {} `json:"fleet,omitempty"`
+	Fleet []byte `json:"fleet,omitempty"`
 	//interface{} `json:"fleet"`
 	LRversion string `json:"lr_version"`
 	Connectivity Connectivity `json:"connectivity"`
@@ -63,7 +63,7 @@ type Location struct {
 	Longitude  string      `json:"longitude"`
 	Latitude   string      `json:"latitude"`
 	Altitude   string      `json:"altitude"`
-	UpdatedAt  interface {} `json:"updated_at"`
+	UpdatedAt  []byte  `json:"updated_at"`
 }
 
 type Action struct {
