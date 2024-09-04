@@ -63,7 +63,7 @@ type Location struct {
 	Longitude  string      `json:"longitude"`
 	Latitude   string      `json:"latitude"`
 	Altitude   string      `json:"altitude"`
-	UpdatedAt  interface{} `json:"updated_at,omitempty"`
+	UpdatedAt  apiextensions.JSON `json:"updated_at,omitempty"`
 }
 
 type Action struct {
