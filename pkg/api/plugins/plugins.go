@@ -1,18 +1,18 @@
 package plugins
 
 import (
-	"github.com/MIKE9708/s4t-sdk-go/pkg"
-	"github.com/MIKE9708/s4t-sdk-go/pkg/api/boards"
-	"github.com/MIKE9708/s4t-sdk-go/pkg/utils"
-	"k8s.io/apimachinery/pkg/runtime"
 	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/MIKE9708/s4t-sdk-go/pkg"
+	"github.com/MIKE9708/s4t-sdk-go/pkg/api/boards"
+	"github.com/MIKE9708/s4t-sdk-go/pkg/utils"
+	"k8s.io/apimachinery/pkg/runtime"
 )
 
-// +kubebuilder:object:generate=true
 type PluginReq struct {
 	Name string  `json:"name"`
 	Parameters  runtime.RawExtension `json:"parameters,omitempty"`
@@ -26,7 +26,6 @@ func (b *PluginReq) Keys() []string {
 		"code", "version", 
 	}
 }
-// +kubebuilder:object:generate=true
 type Plugin struct {
     UUID     string `json:"uuid,omitempty"`
     Name     string `json:"name"`
@@ -37,7 +36,7 @@ type Plugin struct {
 }
 
 
-func (b *Plugin)GetPlugins(client *s4t.Client) ([]Plugin, error) {
+func GetPlugins(client *s4t.Client) ([]Plugin, error) {
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" , nil)
 
 	if err != nil {
@@ -74,8 +73,8 @@ func (b *Plugin)GetPlugins(client *s4t.Client) ([]Plugin, error) {
 	return result.Plugins, nil
 }
 
-func (b *Plugin)GetPlugin(client *s4t.Client) (*Plugin ,error) {
-	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/plugins/" + b.UUID, nil)
+func GetPlugin(client *s4t.Client, uuid string) (*Plugin ,error) {
+	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/plugins/" + uuid, nil)
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to create a request: %v", err)
@@ -112,7 +111,7 @@ func (b *Plugin)GetPlugin(client *s4t.Client) (*Plugin ,error) {
 }
 
 
-func (b *Plugin)CreatePlugin(client *s4t.Client, plugin PluginReq) (*Plugin, error) {
+func CreatePlugin(client *s4t.Client, plugin PluginReq) (*Plugin, error) {
 	jsonBody, err := json.Marshal(plugin)
 	fmt.Printf("%v", string(jsonBody))
 	if err != nil {
@@ -151,8 +150,8 @@ func (b *Plugin)CreatePlugin(client *s4t.Client, plugin PluginReq) (*Plugin, err
 	return &result, nil
 }
 
-func (b *Plugin)DeletePlugin(client *s4t.Client) error {
-	req, err := http.NewRequest("DELETE", client.Endpoint + ":" + client.Port + "/v1/plugins/" + b.UUID, nil)
+func DeletePlugin(client *s4t.Client, uuid string) error {
+	req, err := http.NewRequest("DELETE", client.Endpoint + ":" + client.Port + "/v1/plugins/" + uuid, nil)
 	
 	if err != nil {
 		return fmt.Errorf("failed to create a request: %v", err)
@@ -175,7 +174,7 @@ func (b *Plugin)DeletePlugin(client *s4t.Client) error {
 	return nil
 }
 
-func (b *Plugin)PacthPlugin(client *s4t.Client, data map[string] interface{}) (*Plugin, error) {
+func PacthPlugin(client *s4t.Client, uuid string, data map[string] interface{}) (*Plugin, error) {
 	plugin := PluginReq{}
 	service_keys := plugin.Keys()
 	compare_result := utils.CompareFields(data, service_keys)
@@ -191,7 +190,7 @@ func (b *Plugin)PacthPlugin(client *s4t.Client, data map[string] interface{}) (*
 		return nil, fmt.Errorf("Error marshalling JSON: %v", err)
 		
 	}
-	req, err := http.NewRequest("PATCH", client.Endpoint + ":" + client.Port + "/v1/plugins/" + b.UUID, bytes.NewBuffer(jsonBody))
+	req, err := http.NewRequest("PATCH", client.Endpoint + ":" + client.Port + "/v1/plugins/" + uuid, bytes.NewBuffer(jsonBody))
 	
 	if err != nil {
 		return nil, fmt.Errorf("failed to create a request: %v", err)
@@ -223,7 +222,7 @@ func (b *Plugin)PacthPlugin(client *s4t.Client, data map[string] interface{}) (*
 	return &result, nil
 } 
 
-func (b *Plugin)GetBoardPlugins(client *s4t.Client, board_id string) ([]Plugin, error) {
+func GetBoardPlugins(client *s4t.Client, board_id string) ([]Plugin, error) {
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/"  + board_id + "/plugins", nil)
 
 	if err != nil {
@@ -260,7 +259,7 @@ func (b *Plugin)GetBoardPlugins(client *s4t.Client, board_id string) ([]Plugin, 
 	return result.Plugins, nil
 }
 
-func (b *Plugin)InjectPLuginBoard(client *s4t.Client, board_id string, data map[string] interface{}) error {
+func InjectPLuginBoard(client *s4t.Client, board_id string, data map[string] interface{}) error {
 	jsonBody, err := json.Marshal(data)
 
 	if err != nil {
@@ -298,8 +297,8 @@ func GetPluginStatus(client *s4t.Client) {
 // 405
 func GetPluginsLog(client *s4t.Client) {}
 
-func (b *Plugin)RemoveInjectedPlugin(client *s4t.Client, board_id string) error {
-	req, err := http.NewRequest("DELETE", client.Endpoint + ":" + client.Port + "/v1/boards/" + board_id + "/plugins/"  + b.UUID, nil)
+func RemoveInjectedPlugin(client *s4t.Client,uuid string, board_id string) error {
+	req, err := http.NewRequest("DELETE", client.Endpoint + ":" + client.Port + "/v1/boards/" + board_id + "/plugins/"  + uuid, nil)
 	
 	if err != nil {
 		return fmt.Errorf("failed to create a request: %v", err)

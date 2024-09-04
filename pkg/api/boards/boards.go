@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-
 	"github.com/MIKE9708/s4t-sdk-go/pkg"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/utils"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -74,7 +73,7 @@ type Sensors struct {
 	Name string
 }
 
-func (b *Board)ListBoards(client *s4t.Client) ([]Board, error) {
+func ListBoards(client *s4t.Client) ([]Board, error) {
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" , nil)
 
 	if err != nil {
@@ -114,8 +113,8 @@ func (b *Board)ListBoards(client *s4t.Client) ([]Board, error) {
 }
 
 
-func (b *Board)GetBoardDetail(client *s4t.Client) (*Board, error) {
-	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" + b.Uuid, nil)
+func GetBoardDetail(client *s4t.Client, uuid string) (*Board, error) {
+	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" + uuid, nil)
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to create a request: %v", err)
@@ -147,8 +146,8 @@ func (b *Board)GetBoardDetail(client *s4t.Client) (*Board, error) {
 }
 
 
-func (b *Board)GetBoardConf(client *s4t.Client) ([]byte, error){
-	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" + b.Uuid + "/conf", nil)
+func GetBoardConf(client *s4t.Client, uuid string) ([]byte, error){
+	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" + uuid + "/conf", nil)
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to create a request: %v", err)
@@ -174,7 +173,7 @@ func (b *Board)GetBoardConf(client *s4t.Client) ([]byte, error){
 }
 
 
-func (b *Board)getSensors(client s4t.Client) (*Sensors, error) {
+func getSensors(client s4t.Client) (*Sensors, error) {
 	req, err := http.NewRequest("GET", client.Endpoint + "/v1/boards/sensors/", nil)
 
 	if err != nil {
@@ -205,8 +204,8 @@ func (b *Board)getSensors(client s4t.Client) (*Sensors, error) {
     return &result, nil
 }
 
-func (b *Board)getBoardPosHistory(client s4t.Client) (interface {}, error){
-	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" + b.Uuid + "/position", nil)
+func getBoardPosHistory(client s4t.Client, uuid string) (interface {}, error){
+	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" + uuid + "/position", nil)
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to create a request: %v", err)
@@ -235,8 +234,8 @@ func (b *Board)getBoardPosHistory(client s4t.Client) (interface {}, error){
     return result, nil
 }
 
-func (b *Board)getBoardConfFile(client s4t.Client) (string,error) {
-	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" + b.Uuid + "/conf", nil)
+func getBoardConfFile(client s4t.Client, uuid string) (string,error) {
+	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" + uuid + "/conf", nil)
 
 	if err != nil {
 		return "", fmt.Errorf("failed to create a request: %v", err)
@@ -266,8 +265,8 @@ func (b *Board)getBoardConfFile(client s4t.Client) (string,error) {
 }
 
 
-func (b *Board)DeleteBoard(client *s4t.Client) error {
-	req, err := http.NewRequest("DELETE", client.Endpoint + ":" + client.Port + "/v1/boards/" + b.Uuid, nil)
+func DeleteBoard(client *s4t.Client, uuid string) error {
+	req, err := http.NewRequest("DELETE", client.Endpoint + ":" + client.Port + "/v1/boards/" + uuid, nil)
 		if err != nil {
 		return fmt.Errorf("failed to create a request: %v", err)
 	}
@@ -292,8 +291,8 @@ func (b *Board)DeleteBoard(client *s4t.Client) error {
 }
 
 
-func (b *Board)CreateBoard(client *s4t.Client) (*Board, error) {
-	jsonBody, err := json.Marshal(b)
+func CreateBoard(client *s4t.Client, board interface{}) (*Board, error) {
+	jsonBody, err := json.Marshal(board)
 	if err != nil {
 		return nil, fmt.Errorf("Error marshalling JSON: %v", err)
 		
@@ -327,17 +326,17 @@ func (b *Board)CreateBoard(client *s4t.Client) (*Board, error) {
 		return nil, fmt.Errorf("failed to decode response: %v", err)
 	}
 
-	return b, nil
+	return &result, nil
 }
 
-func (b *Board)AddNewPosition(client *s4t.Client, position Location) error {
+func AddNewPosition(client *s4t.Client, uuid string, position Location) error {
 	jsonBody, err := json.Marshal(position)
 	
 	if err != nil {
 		return fmt.Errorf("Error marshalling JSON: %v", err)
 		
 	}
-	req, err := http.NewRequest("POST", client.Endpoint + ":" + client.Port + "/v1/boards/" + b.Uuid + "/position", bytes.NewBuffer(jsonBody))
+	req, err := http.NewRequest("POST", client.Endpoint + ":" + client.Port + "/v1/boards/" + uuid + "/position", bytes.NewBuffer(jsonBody))
 	
 	if err != nil {
 		return fmt.Errorf("failed to create a request: %v", err)
@@ -363,7 +362,7 @@ func (b *Board)AddNewPosition(client *s4t.Client, position Location) error {
 
 }
 
-func (b *Board)PatchBoard(client *s4t.Client, data map[string]interface{}) (*Board, error) {
+func PatchBoard(client *s4t.Client, uuid string, data map[string]interface{}) (*Board, error) {
 	board := Board{}
 	board_keys := board.Keys()
 	compare_result := utils.CompareFields(data, board_keys)
@@ -379,7 +378,7 @@ func (b *Board)PatchBoard(client *s4t.Client, data map[string]interface{}) (*Boa
 		return nil, fmt.Errorf("Error marshalling JSON: %v", err)
 		
 	}
-	req, err := http.NewRequest("PATCH", client.Endpoint + ":" + client.Port + "/v1/boards/" + b.Uuid, bytes.NewBuffer(jsonBody))
+	req, err := http.NewRequest("PATCH", client.Endpoint + ":" + client.Port + "/v1/boards/" + uuid, bytes.NewBuffer(jsonBody))
 	
 	if err != nil {
 		return nil, fmt.Errorf("failed to create a request: %v", err)
@@ -412,14 +411,14 @@ func (b *Board)PatchBoard(client *s4t.Client, data map[string]interface{}) (*Boa
 }
 
 
-func (b *Board)PerformBoardAction(client *s4t.Client, action map[string] interface{}) error {
+func PerformBoardAction(client *s4t.Client, uuid string, action map[string] interface{}) error {
 	jsonBody, err := json.Marshal(action)
 
 	if err != nil {
 		return fmt.Errorf("Error marshalling JSON: %v", err)
 	}
 
-	req, err := http.NewRequest("POST", client.Endpoint + ":" + client.Port + "/v1/boards/" + b.Uuid + "/action", bytes.NewBuffer(jsonBody))
+	req, err := http.NewRequest("POST", client.Endpoint + ":" + client.Port + "/v1/boards/" + uuid + "/action", bytes.NewBuffer(jsonBody))
 	
 	if err != nil {
 		return fmt.Errorf("failed to create a request: %v", err)

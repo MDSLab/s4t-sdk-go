@@ -10,8 +10,6 @@ import (
 	"github.com/MIKE9708/s4t-sdk-go/pkg/utils"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/api/boards"
 )
-// +kubebuilder:object:generate=true
-// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 type Service struct{
 	Uuid string `json:"uuid,omitempty"`
 	Name string `json:"name"`
@@ -33,7 +31,7 @@ func (b *Service) Keys() []string {
 	}
 }
 
-func (b *Service)GetServices(client *s4t.Client) ([]Service, error){
+func GetServices(client *s4t.Client) ([]Service, error){
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/services/", nil)
 
 	if err != nil {
@@ -68,7 +66,7 @@ func (b *Service)GetServices(client *s4t.Client) ([]Service, error){
     return result.Services, nil
 }
 
-func (b *Service)CreateService(client *s4t.Client, service Service) (*Service,error) {
+func CreateService(client *s4t.Client, service Service) (*Service,error) {
 	jsonBody, err := json.Marshal(service)
 	if err != nil {
 		return nil, fmt.Errorf("Error marshalling JSON: %v", err)
@@ -105,7 +103,7 @@ func (b *Service)CreateService(client *s4t.Client, service Service) (*Service,er
 	return &result, nil
 }
 
-func (b *Service)PatchService(client *s4t.Client, service_id string, data map[string] interface{}) (*Service, error) {
+func PatchService(client *s4t.Client, service_id string, data map[string] interface{}) (*Service, error) {
 	service := Service{}
 	service_keys := service.Keys()
 	compare_result := utils.CompareFields(data, service_keys)
@@ -154,7 +152,7 @@ func (b *Service)PatchService(client *s4t.Client, service_id string, data map[st
 }
 
 
-func (b *Service)DeleteService(client *s4t.Client, service_id string) error {
+func DeleteService(client *s4t.Client, service_id string) error {
 	req, err := http.NewRequest("DELETE", client.Endpoint + ":" + client.Port + "/v1/services/" + service_id, nil)
 	
 	if err != nil {
@@ -178,7 +176,7 @@ func (b *Service)DeleteService(client *s4t.Client, service_id string) error {
 	return nil
 }
 
-func (b *Service)GetBoardExposedServices(client *s4t.Client, board_id string) ([]Service, error) {
+func GetBoardExposedServices(client *s4t.Client, board_id string) ([]Service, error) {
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" + board_id + "/services", nil)
 
 	if err != nil {
@@ -213,7 +211,7 @@ func (b *Service)GetBoardExposedServices(client *s4t.Client, board_id string) ([
     return result.Services, nil
 }
 
-func (b *Service)RestoreService(client *s4t.Client, board_id string) error {
+func RestoreService(client *s4t.Client, board_id string) error {
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" + board_id + "/services/restore", nil)
 
 	if err != nil {
@@ -238,7 +236,7 @@ func (b *Service)RestoreService(client *s4t.Client, board_id string) error {
 	return nil
 } 
 
-func (b *Service)PerfomActionOnService(
+func PerfomActionOnService(
 	client *s4t.Client, board_id string, 
 	service_id string, action boards.Action) error { 
 
