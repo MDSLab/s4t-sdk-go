@@ -4,6 +4,7 @@ import (
 	"github.com/MIKE9708/s4t-sdk-go/pkg"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/api/boards"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/utils"
+	"k8s.io/apiextensions-apiserver/pkg/apis/apiextensions"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -14,7 +15,7 @@ import (
 
 type PluginReq struct {
 	Name string  `json:"name"`
-	Parameters  map[string] interface{} `json:"parameters"`
+	Parameters  apiextensions.JSON `json:"parameters"`
 	Code string `json:"code"`
 	Version string `json:"version,omitempty"`
 }
@@ -73,8 +74,8 @@ func (b *Plugin)GetPlugins(client *s4t.Client) ([]Plugin, error) {
 	return result.Plugins, nil
 }
 
-func (b *Plugin)GetPlugin(client *s4t.Client, plugin_id string) (*Plugin ,error) {
-	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/plugins/" + plugin_id , nil)
+func (b *Plugin)GetPlugin(client *s4t.Client) (*Plugin ,error) {
+	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/plugins/" + b.UUID, nil)
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to create a request: %v", err)
@@ -150,8 +151,8 @@ func (b *Plugin)CreatePlugin(client *s4t.Client, plugin PluginReq) (*Plugin, err
 	return &result, nil
 }
 
-func (b *Plugin)DeletePlugin(client *s4t.Client, plugin_id string) error {
-	req, err := http.NewRequest("DELETE", client.Endpoint + ":" + client.Port + "/v1/plugins/" + plugin_id, nil)
+func (b *Plugin)DeletePlugin(client *s4t.Client) error {
+	req, err := http.NewRequest("DELETE", client.Endpoint + ":" + client.Port + "/v1/plugins/" + b.UUID, nil)
 	
 	if err != nil {
 		return fmt.Errorf("failed to create a request: %v", err)
@@ -174,7 +175,7 @@ func (b *Plugin)DeletePlugin(client *s4t.Client, plugin_id string) error {
 	return nil
 }
 
-func (b *Plugin)PacthPlugin(client *s4t.Client, plugin_id string, data map[string] interface{}) (*Plugin, error) {
+func (b *Plugin)PacthPlugin(client *s4t.Client, data map[string] interface{}) (*Plugin, error) {
 	plugin := PluginReq{}
 	service_keys := plugin.Keys()
 	compare_result := utils.CompareFields(data, service_keys)
@@ -190,7 +191,7 @@ func (b *Plugin)PacthPlugin(client *s4t.Client, plugin_id string, data map[strin
 		return nil, fmt.Errorf("Error marshalling JSON: %v", err)
 		
 	}
-	req, err := http.NewRequest("PATCH", client.Endpoint + ":" + client.Port + "/v1/plugins/" + plugin_id, bytes.NewBuffer(jsonBody))
+	req, err := http.NewRequest("PATCH", client.Endpoint + ":" + client.Port + "/v1/plugins/" + b.UUID, bytes.NewBuffer(jsonBody))
 	
 	if err != nil {
 		return nil, fmt.Errorf("failed to create a request: %v", err)
@@ -297,8 +298,8 @@ func GetPluginStatus(client *s4t.Client) {
 // 405
 func GetPluginsLog(client *s4t.Client) {}
 
-func (b *Plugin)RemoveInjectedPlugin(client *s4t.Client, plugin_id string, board_id string) error {
-	req, err := http.NewRequest("DELETE", client.Endpoint + ":" + client.Port + "/v1/boards/" + board_id + "/plugins/"  + plugin_id, nil)
+func (b *Plugin)RemoveInjectedPlugin(client *s4t.Client, board_id string) error {
+	req, err := http.NewRequest("DELETE", client.Endpoint + ":" + client.Port + "/v1/boards/" + board_id + "/plugins/"  + b.UUID, nil)
 	
 	if err != nil {
 		return fmt.Errorf("failed to create a request: %v", err)
