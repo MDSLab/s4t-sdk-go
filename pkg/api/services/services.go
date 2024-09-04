@@ -11,6 +11,7 @@ import (
 	"github.com/MIKE9708/s4t-sdk-go/pkg/api/boards"
 )
 // +kubebuilder:object:generate=true
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 type Service struct{
 	Uuid string `json:"uuid,omitempty"`
 	Name string `json:"name"`
