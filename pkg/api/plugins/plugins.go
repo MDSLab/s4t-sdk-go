@@ -4,7 +4,7 @@ import (
 	"github.com/MIKE9708/s4t-sdk-go/pkg"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/api/boards"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/utils"
-	// "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions"
+	"k8s.io/apimachinery/pkg/runtime"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -15,7 +15,7 @@ import (
 
 type PluginReq struct {
 	Name string  `json:"name"`
-	Parameters  []byte `json:"parameters,omitempty"`
+	Parameters  runtime.RawExtension `json:"parameters,omitempty"`
 	Code string `json:"code"`
 	Version string `json:"version,omitempty"`
 }

@@ -1,18 +1,21 @@
 package example
 
 import (
+	"encoding/json"
 	"fmt"
+	"testing"
+
 	"github.com/MIKE9708/s4t-sdk-go/pkg"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/api/boards"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/api/plugins"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/api/services"
-	"testing"
-
+	"k8s.io/apimachinery/pkg/runtime"
 )
 
 var service_id = ""
 var board_data = boards.Board{}
 var plugin_data = plugins.Plugin{}
+var f interface{}
 
 func TestGetBoardDetails(t *testing.T) {
 	c := s4t.Client{}
@@ -136,7 +139,6 @@ func TestBoardAction(t *testing.T) {
 	if err != nil {
 		t.Errorf("Error creating board: %v", err)
 	}
-
 }
 */
 
@@ -172,7 +174,6 @@ func TestCreateService(t *testing.T) {
 		Name: "test_service",
 		Port: 4321,
 		Protocol: "TCP",
-
 	}
 
 	resp, err := service.CreateService(client, service)
@@ -326,14 +327,16 @@ func TestGetPlugin(t *testing.T) {
 func TestCreatePlugin(t *testing.T) {	
 	c := s4t.Client{}
 	client, err := c.GetClientConnection()
-
+ 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
 	}	
 	
+	err = json.Unmarshal([]byte(`{}`), &f)
+	
 	plugin_req := plugins.PluginReq{
 		Name: "Test-plugin-s4t",
-		Parameters: []byte(`{}`),
+		Parameters: runtime.RawExtension{Raw: []byte(`{}`)},
 		Code:"from iotronic_lightningrod.plugins import Plugin\n\nfrom oslo_log import log as logging\n\nLOG = logging.getLogger(__name__)\n\n\n# User imports\n\n\nclass Worker(Plugin.Plugin):\n    def __init__(self, uuid, name, q_result, params=None):\n        super(Worker, self).__init__(uuid, name, q_result, params)\n\n    def run(self):\n        LOG.info(\"Input parameters: \" + str(self.params))\n        LOG.info(\"Plugin \" + self.name + \" process completed!\")\n        self.q_result.put(\"ZERO RESULT\")",
 		// Description: "A generic test plugin",
 	}
