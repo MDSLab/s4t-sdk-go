@@ -15,7 +15,7 @@ import (
 
 type PluginReq struct {
 	Name string  `json:"name"`
-	Parameters  apiextensions.JSON `json:"parameters"`
+	Parameters  apiextensions.JSON `json:"parameters,omitempty"`
 	Code string `json:"code"`
 	Version string `json:"version,omitempty"`
 }

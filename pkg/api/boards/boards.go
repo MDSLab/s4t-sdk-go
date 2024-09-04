@@ -21,7 +21,7 @@ type Board struct {
 	Agent string `json:"agent"`
 	Wstunip string `json:"wstun_ip,omitempty"`
 	Session string `json:"session"`
-	Fleet apiextensions.JSON `json:"fleet"`
+	Fleet apiextensions.JSON `json:"fleet,omitempty"`
 	//interface{} `json:"fleet"`
 	LRversion string `json:"lr_version"`
 	Connectivity Connectivity `json:"connectivity"`
