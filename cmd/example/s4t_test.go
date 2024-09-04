@@ -333,7 +333,7 @@ func TestCreatePlugin(t *testing.T) {
 	
 	plugin_req := plugins.PluginReq{
 		Name: "Test-plugin-s4t",
-		Parameters: &map[string] interface{}{},
+		Parameters: map[string] interface{}{},
 		Code:"from iotronic_lightningrod.plugins import Plugin\n\nfrom oslo_log import log as logging\n\nLOG = logging.getLogger(__name__)\n\n\n# User imports\n\n\nclass Worker(Plugin.Plugin):\n    def __init__(self, uuid, name, q_result, params=None):\n        super(Worker, self).__init__(uuid, name, q_result, params)\n\n    def run(self):\n        LOG.info(\"Input parameters: \" + str(self.params))\n        LOG.info(\"Plugin \" + self.name + \" process completed!\")\n        self.q_result.put(\"ZERO RESULT\")",
 		// Description: "A generic test plugin",
 	}

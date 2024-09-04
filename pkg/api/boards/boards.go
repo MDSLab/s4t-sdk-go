@@ -9,7 +9,7 @@ import (
 
 	"github.com/MIKE9708/s4t-sdk-go/pkg"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/utils"
-	"k8s.io/apiextensions-apiserver/pkg/apis/apiextensions"
+	// "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions"
 )
 
 type Board struct {
@@ -21,7 +21,7 @@ type Board struct {
 	Agent string `json:"agent"`
 	Wstunip string `json:"wstun_ip,omitempty"`
 	Session string `json:"session"`
-	Fleet apiextensions.JSON `json:"fleet,omitempty"`
+	Fleet interface {} `json:"fleet,omitempty"`
 	//interface{} `json:"fleet"`
 	LRversion string `json:"lr_version"`
 	Connectivity Connectivity `json:"connectivity"`
@@ -63,7 +63,7 @@ type Location struct {
 	Longitude  string      `json:"longitude"`
 	Latitude   string      `json:"latitude"`
 	Altitude   string      `json:"altitude"`
-	UpdatedAt  apiextensions.JSON `json:"updated_at,omitempty"`
+	UpdatedAt  interface {} `json:"updated_at"`
 }
 
 type Action struct {
