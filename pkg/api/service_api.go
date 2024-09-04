@@ -1,37 +1,17 @@
-package services
+package s4t
 
 import (
-	"fmt"
-	"encoding/json"
 	"bytes"
+	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
-	"github.com/MIKE9708/s4t-sdk-go/pkg"
+
+	boards "github.com/MIKE9708/s4t-sdk-go/pkg/api/data/board"
+	services "github.com/MIKE9708/s4t-sdk-go/pkg/api/data/service"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/utils"
-	"github.com/MIKE9708/s4t-sdk-go/pkg/api/boards"
 )
-type Service struct{
-	Uuid string `json:"uuid,omitempty"`
-	Name string `json:"name"`
-	Project string `json:"project,omitempty"`
-	Port uint `json:"port"`
-	Protocol string `json:"protocol"`
-	Links []boards.Link `json:"links,omitempty"`
-}
-
-func (b *Service) Keys() []string {
-    return  []string{
-		"uuid", "code", 
-		"status", "name", 
-		"type", "agent", 
-		"wstpun_ip","session",
-		"fleet","lr_version",
-		"connectivity","links",
-		"location",
-	}
-}
-
-func GetServices(client *s4t.Client) ([]Service, error){
+func (client *Client)GetServices() ([]services.Service, error){
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/services/", nil)
 
 	if err != nil {
@@ -55,7 +35,7 @@ func GetServices(client *s4t.Client) ([]Service, error){
 	}
 
 	var result struct {
-		Services []Service `json:"services"`
+		Services []services.Service `json:"services"`
 	}
 
 	if err := json.Unmarshal([]byte(body), &result); err != nil {
@@ -66,7 +46,7 @@ func GetServices(client *s4t.Client) ([]Service, error){
     return result.Services, nil
 }
 
-func CreateService(client *s4t.Client, service Service) (*Service,error) {
+func (client *Client)CreateService(service services.Service) (*services.Service, error) {
 	jsonBody, err := json.Marshal(service)
 	if err != nil {
 		return nil, fmt.Errorf("Error marshalling JSON: %v", err)
@@ -94,7 +74,7 @@ func CreateService(client *s4t.Client, service Service) (*Service,error) {
 	if resp.StatusCode != http.StatusCreated {
 		return nil, fmt.Errorf("Unexpected status code: %d", resp.StatusCode)
 	}
-	var result = Service{}
+	var result = services.Service{}
 
 	if err := json.Unmarshal([]byte(body), &result); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %v", err)
@@ -103,8 +83,8 @@ func CreateService(client *s4t.Client, service Service) (*Service,error) {
 	return &result, nil
 }
 
-func PatchService(client *s4t.Client, service_id string, data map[string] interface{}) (*Service, error) {
-	service := Service{}
+func (client *Client)PatchService(service_id string, data map[string] interface{}) (*services.Service, error) {
+	service := services.Service{}
 	service_keys := service.Keys()
 	compare_result := utils.CompareFields(data, service_keys)
 
@@ -142,7 +122,7 @@ func PatchService(client *s4t.Client, service_id string, data map[string] interf
 		return nil, fmt.Errorf("Unexpected status code: %d", resp.StatusCode)
 	}
 	
-	result := Service{}
+	result := services.Service{}
 
 	if err := json.Unmarshal([]byte(body), &result); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %v", err)
@@ -152,7 +132,7 @@ func PatchService(client *s4t.Client, service_id string, data map[string] interf
 }
 
 
-func DeleteService(client *s4t.Client, service_id string) error {
+func (client *Client)DeleteService(service_id string) error {
 	req, err := http.NewRequest("DELETE", client.Endpoint + ":" + client.Port + "/v1/services/" + service_id, nil)
 	
 	if err != nil {
@@ -176,7 +156,7 @@ func DeleteService(client *s4t.Client, service_id string) error {
 	return nil
 }
 
-func GetBoardExposedServices(client *s4t.Client, board_id string) ([]Service, error) {
+func (client *Client)GetBoardExposedServices(board_id string) ([]services.Service, error) {
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" + board_id + "/services", nil)
 
 	if err != nil {
@@ -200,7 +180,7 @@ func GetBoardExposedServices(client *s4t.Client, board_id string) ([]Service, er
 	}
 
 	var result struct {
-		Services []Service `json:"exposed"`
+		Services []services.Service `json:"exposed"`
 	}
 
 	if err := json.Unmarshal([]byte(body), &result); err != nil {
@@ -211,7 +191,7 @@ func GetBoardExposedServices(client *s4t.Client, board_id string) ([]Service, er
     return result.Services, nil
 }
 
-func RestoreService(client *s4t.Client, board_id string) error {
+func (client *Client)RestoreService(board_id string) error {
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" + board_id + "/services/restore", nil)
 
 	if err != nil {
@@ -236,8 +216,8 @@ func RestoreService(client *s4t.Client, board_id string) error {
 	return nil
 } 
 
-func PerfomActionOnService(
-	client *s4t.Client, board_id string, 
+func (client *Client)PerfomActionOnService(
+	board_id string, 
 	service_id string, action boards.Action) error { 
 
 	jsonBody, err := json.Marshal(action)

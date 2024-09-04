@@ -5,16 +5,15 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/MIKE9708/s4t-sdk-go/pkg"
-	"github.com/MIKE9708/s4t-sdk-go/pkg/api/boards"
-	"github.com/MIKE9708/s4t-sdk-go/pkg/api/plugins"
-	"github.com/MIKE9708/s4t-sdk-go/pkg/api/services"
+	"github.com/MIKE9708/s4t-sdk-go/pkg/api"
+	"github.com/MIKE9708/s4t-sdk-go/pkg/api/data/plugin"
+	"github.com/MIKE9708/s4t-sdk-go/pkg/api/data/service"
 	"k8s.io/apimachinery/pkg/runtime"
 )
 
 var service_id = ""
 var board_data = ""
-var plugin_data = plugins.Plugin{}
+var plugin_data = ""
 var f interface{}
 
 func TestGetBoardDetails(t *testing.T) {
@@ -26,7 +25,7 @@ func TestGetBoardDetails(t *testing.T) {
 	}	
 
 	board := "c910e7f1-74d0-4f76-ae6a-a46c1da0d92d"
-	resp, err := boards.GetBoardDetail(client, board)
+	resp, err := client.GetBoardDetail(board)
 	board_data = board	
 	if err != nil {
 		t.Errorf("Error getting board info: %v", err)
@@ -44,7 +43,7 @@ func TestGetBoards(t *testing.T) {
 		t.Errorf("Error getting connection: %v", err)
 	}
 
-	resp, err := boards.ListBoards(client)
+	resp, err := client.ListBoards()
 	
 	if err != nil {
 		t.Errorf("Error listing boards: %v", err)
@@ -109,7 +108,7 @@ func TestPatchBoard(t *testing.T) {
         "code": "test-patched",
 	}
 
-	resp, err := boards.PatchBoard(client,board_data,updated_board_data)
+	resp, err := client.PatchBoard(board_data,updated_board_data)
 	
 	if err != nil {
 		t.Errorf("Error patching board: %v", err)
@@ -149,7 +148,7 @@ func TestGetServices(t *testing.T) {
 		t.Errorf("Error getting connection: %v", err)
 	}	
 	
-	resp, err := services.GetServices(client)
+	resp, err := client.GetServices()
 	
 	if err != nil {
 		t.Errorf("Error getting service info: %v", err)
@@ -174,7 +173,7 @@ func TestCreateService(t *testing.T) {
 		Protocol: "TCP",
 	}
 
-	resp, err := services.CreateService(client, service)
+	resp, err := client.CreateService(service)
 	
 	if err != nil {
 		t.Errorf("Error creating service info: %v", err)
@@ -197,7 +196,7 @@ func TestPatchService(t *testing.T) {
 		"name": "test-service-generic-patched",
 	}
 
-	resp, err := services.PatchService(client, service_id, updated_service_data)
+	resp, err := client.PatchService(service_id, updated_service_data)
 	
 	if err != nil {
 		t.Errorf("Error creating service info: %v", err)
@@ -214,7 +213,7 @@ func TestDeleteService(t *testing.T) {
 		t.Errorf("Error getting connection: %v", err)
 	}	
 	
-	err = services.DeleteService(client, service_id)
+	err = client.DeleteService(service_id)
 	
 	if err != nil {
 		t.Errorf("Error creating service info: %v", err)
@@ -230,7 +229,7 @@ func TestBoardExposedServices(t *testing.T) {
 		t.Errorf("Error getting connection: %v", err)
 	}	
 
-	resp, err := services.GetBoardExposedServices(client, board_data)
+	resp, err := client.GetBoardExposedServices(board_data)
 	
 	if err != nil {
 		t.Errorf("Error getting service info: %v", err)
@@ -249,7 +248,7 @@ func TestRestoreBoardService(t *testing.T) {
 		t.Errorf("Error getting connection: %v", err)
 	}	
 
-	err = services.RestoreService(client, board_data)
+	err = client.RestoreService(board_data)
 	
 	if err != nil {
 		t.Errorf("Error getting service info: %v", err)
@@ -286,7 +285,7 @@ func TestGetPlugins(t *testing.T) {
 		t.Errorf("Error getting connection: %v", err)
 	}
 
-	resp, err := plugins.GetPlugins(client)
+	resp, err := client.GetPlugins()
 	
 	if err != nil {
 		t.Errorf("Error getting plugin info: %v", err)
@@ -307,7 +306,7 @@ func TestGetPlugin(t *testing.T) {
 	}	
 
 	plugin := "b5217ab0-82e9-46c0-94d6-1c0d79437db6"
-	resp, err := plugins.GetPlugin(client, plugin)
+	resp, err := client.GetPlugin(plugin)
 	
 	if err != nil {
 		t.Errorf("Error getting plugin info: %v", err)
@@ -334,13 +333,13 @@ func TestCreatePlugin(t *testing.T) {
 		// Description: "A generic test plugin",
 	}
 	
-	resp, err := plugins.CreatePlugin(client, plugin_req)
+	resp, err := client.CreatePlugin(plugin_req)
 	
 	if err != nil {
 		t.Errorf("Error creating plugin: %v", err)
 	}
 	
-	plugin_data.UUID = resp.UUID
+	plugin_data = resp.UUID
 	fmt.Printf("Plugin name: %v", resp.Name)
 }
 
@@ -356,7 +355,7 @@ func TestPatchPlugin(t *testing.T) {
 		"name": "test-plugin-generic-patched",
 	}
 
-	resp, err := plugin_data.PacthPlugin(client, updated_service_data)
+	resp, err := client.PacthPlugin(plugin_data,updated_service_data)
 	
 	if err != nil {
 		t.Errorf("Error patching plugin info: %v", err)
@@ -374,13 +373,13 @@ func TestInjectBoardPlugin(t *testing.T) {
 	}	
 
 	data := map[string] interface{} {
-		"plugin": plugin_data.UUID,
+		"plugin": plugin_data,
 		// "onboot": "yes",
 		// "force": "yes",
 
 	} 
 
-	err = plugins.InjectPLuginBoard(client, board_data, data)
+	err = client.InjectPLuginBoard(board_data, data)
 	
 	if err != nil {
 		t.Errorf("Error getting plugin info: %v", err)
@@ -395,7 +394,7 @@ func TestDeleteBoardPlugin(t *testing.T) {
 		t.Errorf("Error getting connection: %v", err)
 	}	
 	
-	err = plugins.RemoveInjectedPlugin(client, board_data)
+	err = client.RemoveInjectedPlugin(plugin_data,board_data)
 	
 	if err != nil {
 		t.Errorf("Error deleting plugin: %v", err)
@@ -411,7 +410,7 @@ func TestDeletePLugin(t *testing.T) {
 		t.Errorf("Error getting connection: %v", err)
 	}	
 	
-	err = plugins.DeletePlugin(client, )
+	err = client.DeletePlugin(plugin_data)
 	
 	if err != nil {
 		t.Errorf("Error deleting plugin: %v", err)
@@ -427,7 +426,7 @@ func TestGetBoardPlugins(t *testing.T) {
 		t.Errorf("Error getting connection: %v", err)
 	}	
 
-	resp, err := plugins.GetBoardPlugins(client, board_data)
+	resp, err := client.GetBoardPlugins(board_data)
 	
 	if err != nil {
 		t.Errorf("Error getting plugin info: %v", err)

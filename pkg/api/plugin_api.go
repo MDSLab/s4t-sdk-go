@@ -1,4 +1,4 @@
-package plugins
+package s4t
 
 import (
 	"bytes"
@@ -6,37 +6,11 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-
-	"github.com/MIKE9708/s4t-sdk-go/pkg"
-	"github.com/MIKE9708/s4t-sdk-go/pkg/api/boards"
+	"github.com/MIKE9708/s4t-sdk-go/pkg/api/data/plugin"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/utils"
-	"k8s.io/apimachinery/pkg/runtime"
 )
 
-type PluginReq struct {
-	Name string  `json:"name"`
-	Parameters  runtime.RawExtension `json:"parameters,omitempty"`
-	Code string `json:"code"`
-	Version string `json:"version,omitempty"`
-}
-
-func (b *PluginReq) Keys() []string {
-    return  []string{
-		"name", "parameters", 
-		"code", "version", 
-	}
-}
-type Plugin struct {
-    UUID     string `json:"uuid,omitempty"`
-    Name     string `json:"name"`
-    Public   bool   `json:"public"`
-    Owner    string `json:"owner"`
-    Callable bool   `json:"callable"`
-    Links    []boards.Link `json:"links,omitempty"`
-}
-
-
-func GetPlugins(client *s4t.Client) ([]Plugin, error) {
+func (client *Client)GetPlugins() ([]plugins.Plugin, error) {
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" , nil)
 
 	if err != nil {
@@ -63,7 +37,7 @@ func GetPlugins(client *s4t.Client) ([]Plugin, error) {
 	}
 
 	var result struct {
-		Plugins []Plugin `json:"plugins"`
+		Plugins []plugins.Plugin `json:"plugins"`
 	}
 
 	if err := json.Unmarshal([]byte(body), &result); err != nil {
@@ -73,7 +47,7 @@ func GetPlugins(client *s4t.Client) ([]Plugin, error) {
 	return result.Plugins, nil
 }
 
-func GetPlugin(client *s4t.Client, uuid string) (*Plugin ,error) {
+func (client *Client)GetPlugin(uuid string) (*plugins.Plugin ,error) {
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/plugins/" + uuid, nil)
 
 	if err != nil {
@@ -99,7 +73,7 @@ func GetPlugin(client *s4t.Client, uuid string) (*Plugin ,error) {
 		return nil, fmt.Errorf("Unexpected status code: %d", resp.StatusCode)
 	}
 
-	result := Plugin{}
+	result := plugins.Plugin{}
 
 	if err := json.Unmarshal([]byte(body), &result); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %v", err)
@@ -111,7 +85,7 @@ func GetPlugin(client *s4t.Client, uuid string) (*Plugin ,error) {
 }
 
 
-func CreatePlugin(client *s4t.Client, plugin PluginReq) (*Plugin, error) {
+func (client *Client)CreatePlugin(plugin plugins.PluginReq) (*plugins.Plugin, error) {
 	jsonBody, err := json.Marshal(plugin)
 	fmt.Printf("%v", string(jsonBody))
 	if err != nil {
@@ -141,7 +115,7 @@ func CreatePlugin(client *s4t.Client, plugin PluginReq) (*Plugin, error) {
 		return nil, fmt.Errorf("Unexpected status code: %d", resp.StatusCode)
 	}
 	
-	result := Plugin{}
+	result := plugins.Plugin{}
 
 	if err := json.Unmarshal([]byte(body), &result); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %v", err)
@@ -150,7 +124,7 @@ func CreatePlugin(client *s4t.Client, plugin PluginReq) (*Plugin, error) {
 	return &result, nil
 }
 
-func DeletePlugin(client *s4t.Client, uuid string) error {
+func (client *Client)DeletePlugin(uuid string) error {
 	req, err := http.NewRequest("DELETE", client.Endpoint + ":" + client.Port + "/v1/plugins/" + uuid, nil)
 	
 	if err != nil {
@@ -174,8 +148,8 @@ func DeletePlugin(client *s4t.Client, uuid string) error {
 	return nil
 }
 
-func PacthPlugin(client *s4t.Client, uuid string, data map[string] interface{}) (*Plugin, error) {
-	plugin := PluginReq{}
+func (client *Client)PacthPlugin(uuid string, data map[string] interface{}) (*plugins.Plugin, error) {
+	plugin := plugins.PluginReq{}
 	service_keys := plugin.Keys()
 	compare_result := utils.CompareFields(data, service_keys)
 
@@ -213,7 +187,7 @@ func PacthPlugin(client *s4t.Client, uuid string, data map[string] interface{}) 
 		return nil, fmt.Errorf("Unexpected status code: %d", resp.StatusCode)
 	}
 	
-	result := Plugin{}
+	result := plugins.Plugin{}
 
 	if err := json.Unmarshal([]byte(body), &result); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %v", err)
@@ -222,7 +196,7 @@ func PacthPlugin(client *s4t.Client, uuid string, data map[string] interface{}) 
 	return &result, nil
 } 
 
-func GetBoardPlugins(client *s4t.Client, board_id string) ([]Plugin, error) {
+func (client *Client)GetBoardPlugins(board_id string) ([]plugins.Plugin, error) {
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/"  + board_id + "/plugins", nil)
 
 	if err != nil {
@@ -249,7 +223,7 @@ func GetBoardPlugins(client *s4t.Client, board_id string) ([]Plugin, error) {
 	}
 
 	var result struct {
-		Plugins []Plugin `json:"plugins"`
+		Plugins []plugins.Plugin `json:"plugins"`
 	}
 
 	if err := json.Unmarshal([]byte(body), &result); err != nil {
@@ -259,7 +233,7 @@ func GetBoardPlugins(client *s4t.Client, board_id string) ([]Plugin, error) {
 	return result.Plugins, nil
 }
 
-func InjectPLuginBoard(client *s4t.Client, board_id string, data map[string] interface{}) error {
+func (client *Client)InjectPLuginBoard(board_id string, data map[string] interface{}) error {
 	jsonBody, err := json.Marshal(data)
 
 	if err != nil {
@@ -291,13 +265,13 @@ func InjectPLuginBoard(client *s4t.Client, board_id string, data map[string] int
 	return nil
 } 
 // 405
-func GetPluginStatus(client *s4t.Client) {
+func (client *Client)GetPluginStatus() {
 }
 
 // 405
-func GetPluginsLog(client *s4t.Client) {}
+func (client *Client)GetPluginsLog() {}
 
-func RemoveInjectedPlugin(client *s4t.Client,uuid string, board_id string) error {
+func (client *Client)RemoveInjectedPlugin(uuid string, board_id string) error {
 	req, err := http.NewRequest("DELETE", client.Endpoint + ":" + client.Port + "/v1/boards/" + board_id + "/plugins/"  + uuid, nil)
 	
 	if err != nil {

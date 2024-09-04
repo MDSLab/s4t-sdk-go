@@ -1,4 +1,4 @@
-package boards
+package s4t
 
 import (
 	"bytes"
@@ -6,74 +6,11 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"github.com/MIKE9708/s4t-sdk-go/pkg"
+	"github.com/MIKE9708/s4t-sdk-go/pkg/api/data/board"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/utils"
-	"k8s.io/apimachinery/pkg/runtime"
 )
-// +kubebuilder:object:generate=true
-type Board struct {
-	Uuid string `json:"uuid"`
-	Code string `json:"code"`
-	Status string `json:"status"`
-	Name string `json:"name"`
-	Type string `json:"type"`
-	Agent string `json:"agent"`
-	Wstunip string `json:"wstun_ip,omitempty"`
-	Session string `json:"session"`
-	Fleet runtime.RawExtension `json:"fleet,omitempty"`
-	//interface{} `json:"fleet"`
-	LRversion string `json:"lr_version"`
-	Connectivity Connectivity `json:"connectivity"`
-	Links []Link `json:"links,omitempty"`
-	Location []Location  `json:"location"`
-}
-func (b *Board) Keys() []string {
-    return  []string{
-		"uuid", "code", 
-		"status", "name", 
-		"type", "agent", 
-		"wstpun_ip","session",
-		"fleet","lr_version",
-		"connectivity","links",
-		"location",
-	}
-}
 
-type Connectivity struct {
-    Iface   string `json:"iface"`
-    LocalIP string `json:"local_ip"`
-    MAC     string `json:"mac"`
-}
-func (c Connectivity) MarshalJSON() ([]byte, error) {
-	if c == (Connectivity{}) {
-		return []byte("{}"), nil
-	}
-	type ConnectivityAlias Connectivity
-	return json.Marshal(ConnectivityAlias(c))
-}
-
-
-type Link struct {
-	Href string `json:"href"`
-	Rel  string `json:"rel"`
-}
-
-type Location struct {
-	Longitude  string      `json:"longitude"`
-	Latitude   string      `json:"latitude"`
-	Altitude   string      `json:"altitude"`
-	UpdatedAt  []byte  `json:"updated_at"`
-}
-
-type Action struct {
-	ServiceAction string `json:"service_action"`
-}
-
-type Sensors struct {
-	Name string
-}
-
-func ListBoards(client *s4t.Client) ([]Board, error) {
+func (client *Client)ListBoards() ([]boards.Board, error) {
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" , nil)
 
 	if err != nil {
@@ -100,7 +37,7 @@ func ListBoards(client *s4t.Client) ([]Board, error) {
 	}
 
 	var result struct {
-		Boards []Board `json:"boards"`
+		Boards []boards.Board `json:"boards"`
 	}
 
 	if err := json.Unmarshal([]byte(body), &result); err != nil {
@@ -113,7 +50,7 @@ func ListBoards(client *s4t.Client) ([]Board, error) {
 }
 
 
-func GetBoardDetail(client *s4t.Client, uuid string) (*Board, error) {
+func (client *Client)GetBoardDetail(uuid string) (*boards.Board, error) {
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" + uuid, nil)
 
 	if err != nil {
@@ -136,7 +73,7 @@ func GetBoardDetail(client *s4t.Client, uuid string) (*Board, error) {
 		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
 	}
 
-	result := Board{}
+	result := boards.Board{}
 
 	if err := json.Unmarshal([]byte(body), &result); err != nil {
         return nil, fmt.Errorf("failed to decode response: %v", err)
@@ -146,7 +83,7 @@ func GetBoardDetail(client *s4t.Client, uuid string) (*Board, error) {
 }
 
 
-func GetBoardConf(client *s4t.Client, uuid string) ([]byte, error){
+func (client *Client)GetBoardConf(uuid string) ([]byte, error){
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" + uuid + "/conf", nil)
 
 	if err != nil {
@@ -173,7 +110,7 @@ func GetBoardConf(client *s4t.Client, uuid string) ([]byte, error){
 }
 
 
-func getSensors(client s4t.Client) (*Sensors, error) {
+func (client *Client)getSensors() (*boards.Sensors, error) {
 	req, err := http.NewRequest("GET", client.Endpoint + "/v1/boards/sensors/", nil)
 
 	if err != nil {
@@ -195,7 +132,7 @@ func getSensors(client s4t.Client) (*Sensors, error) {
 		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
 	}
 
-	result := Sensors{}
+	result := boards.Sensors{}
 
 	if err := json.Unmarshal([]byte(body), &result); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %v", err)
@@ -204,7 +141,7 @@ func getSensors(client s4t.Client) (*Sensors, error) {
     return &result, nil
 }
 
-func getBoardPosHistory(client s4t.Client, uuid string) (interface {}, error){
+func (client *Client)getBoardPosHistory(uuid string) (interface {}, error){
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" + uuid + "/position", nil)
 
 	if err != nil {
@@ -234,7 +171,7 @@ func getBoardPosHistory(client s4t.Client, uuid string) (interface {}, error){
     return result, nil
 }
 
-func getBoardConfFile(client s4t.Client, uuid string) (string,error) {
+func (client *Client)getBoardConfFile(uuid string) (string,error) {
 	req, err := http.NewRequest("GET", client.Endpoint + ":" + client.Port + "/v1/boards/" + uuid + "/conf", nil)
 
 	if err != nil {
@@ -265,7 +202,7 @@ func getBoardConfFile(client s4t.Client, uuid string) (string,error) {
 }
 
 
-func DeleteBoard(client *s4t.Client, uuid string) error {
+func (client *Client)DeleteBoard(uuid string) error {
 	req, err := http.NewRequest("DELETE", client.Endpoint + ":" + client.Port + "/v1/boards/" + uuid, nil)
 		if err != nil {
 		return fmt.Errorf("failed to create a request: %v", err)
@@ -291,7 +228,7 @@ func DeleteBoard(client *s4t.Client, uuid string) error {
 }
 
 
-func CreateBoard(client *s4t.Client, board interface{}) (*Board, error) {
+func (client *Client)CreateBoard(board interface{}) (*boards.Board, error) {
 	jsonBody, err := json.Marshal(board)
 	if err != nil {
 		return nil, fmt.Errorf("Error marshalling JSON: %v", err)
@@ -320,7 +257,7 @@ func CreateBoard(client *s4t.Client, board interface{}) (*Board, error) {
 		return nil, fmt.Errorf("Unexpected status code: %d", resp.StatusCode)
 	}
 	
-	result := Board{}
+	result := boards.Board{}
 
 	if err := json.Unmarshal([]byte(body), &result); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %v", err)
@@ -329,7 +266,7 @@ func CreateBoard(client *s4t.Client, board interface{}) (*Board, error) {
 	return &result, nil
 }
 
-func AddNewPosition(client *s4t.Client, uuid string, position Location) error {
+func (client *Client)AddNewPosition(uuid string, position boards.Location) error {
 	jsonBody, err := json.Marshal(position)
 	
 	if err != nil {
@@ -362,8 +299,8 @@ func AddNewPosition(client *s4t.Client, uuid string, position Location) error {
 
 }
 
-func PatchBoard(client *s4t.Client, uuid string, data map[string]interface{}) (*Board, error) {
-	board := Board{}
+func (client *Client)PatchBoard(uuid string, data map[string]interface{}) (*boards.Board, error) {
+	board := boards.Board{}
 	board_keys := board.Keys()
 	compare_result := utils.CompareFields(data, board_keys)
 
@@ -401,7 +338,7 @@ func PatchBoard(client *s4t.Client, uuid string, data map[string]interface{}) (*
 		return nil, fmt.Errorf("Unexpected status code: %d", resp.StatusCode)
 	}
 	
-	result := Board{}
+	result := boards.Board{}
 
 	if err := json.Unmarshal([]byte(body), &result); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %v", err)
@@ -411,7 +348,7 @@ func PatchBoard(client *s4t.Client, uuid string, data map[string]interface{}) (*
 }
 
 
-func PerformBoardAction(client *s4t.Client, uuid string, action map[string] interface{}) error {
+func (client *Client)PerformBoardAction(uuid string, action map[string] interface{}) error {
 	jsonBody, err := json.Marshal(action)
 
 	if err != nil {
