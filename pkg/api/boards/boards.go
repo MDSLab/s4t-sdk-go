@@ -11,7 +11,7 @@ import (
 	"github.com/MIKE9708/s4t-sdk-go/pkg/utils"
 	"k8s.io/apimachinery/pkg/runtime"
 )
-
+// +kubebuilder:object:generate=true
 type Board struct {
 	Uuid string `json:"uuid"`
 	Code string `json:"code"`

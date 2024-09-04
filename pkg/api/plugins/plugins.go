@@ -12,7 +12,7 @@ import (
 	"net/http"
 )
 
-
+// +kubebuilder:object:generate=true
 type PluginReq struct {
 	Name string  `json:"name"`
 	Parameters  runtime.RawExtension `json:"parameters,omitempty"`
@@ -26,7 +26,7 @@ func (b *PluginReq) Keys() []string {
 		"code", "version", 
 	}
 }
-
+// +kubebuilder:object:generate=true
 type Plugin struct {
     UUID     string `json:"uuid,omitempty"`
     Name     string `json:"name"`

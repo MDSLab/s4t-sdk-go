@@ -10,7 +10,7 @@ import (
 	"github.com/MIKE9708/s4t-sdk-go/pkg/utils"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/api/boards"
 )
-
+// +kubebuilder:object:generate=true
 type Service struct{
 	Uuid string `json:"uuid,omitempty"`
 	Name string `json:"name"`
