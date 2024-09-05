@@ -228,7 +228,7 @@ func (client *Client)DeleteBoard(uuid string) error {
 }
 
 
-func (client *Client)CreateBoard(board interface{}) (*boards.Board, error) {
+func (client *Client)CreateBoard(board boards.Board) (*boards.Board, error) {
 	jsonBody, err := json.Marshal(board)
 	if err != nil {
 		return nil, fmt.Errorf("Error marshalling JSON: %v", err)
