@@ -31,7 +31,7 @@ func TestGetBoardDetails(t *testing.T) {
 		t.Errorf("Error getting board info: %v", err)
 	}
 
-	fmt.Printf("Board Name: %s, Status: %s\n", resp.Name, resp.Status)
+	fmt.Printf("Board Name: %s, Status: %s\n\n", resp.Name, resp.Status)
 
 }
 
@@ -50,7 +50,7 @@ func TestGetBoards(t *testing.T) {
 	}
 
 	for _, board := range resp {
-		fmt.Printf("Test Get board returned Board Name: %s, Status: %s\n", board.Name, board.Status)
+		fmt.Printf("Test Get board returned Board Name: %s, Status: %s\n\n", board.Name, board.Status)
 	}
 }
 
@@ -114,7 +114,7 @@ func TestPatchBoard(t *testing.T) {
 		t.Errorf("Error patching board: %v", err)
 	}
 	
-	fmt.Printf("Board Name: %s, Status: %s\n", resp.Name, resp.Code)
+	fmt.Printf("Board Name: %s, Status: %s\n\n", resp.Name, resp.Code)
 } 
 
 /*
@@ -155,7 +155,7 @@ func TestGetServices(t *testing.T) {
 	}
 
 	for _, service := range resp {
-		fmt.Printf("Service Name: %s, Status: %s\n", service.Name, service.Uuid)
+		fmt.Printf("Service Name: %s, Status: %s\n\n", service.Name, service.Uuid)
 	}
 }
 
@@ -179,7 +179,7 @@ func TestCreateService(t *testing.T) {
 		t.Errorf("Error creating service info: %v", err)
 	}
 
-	fmt.Printf("Service Name: %s, Status: %s\n", resp.Name, resp.Uuid)
+	fmt.Printf("Service Name: %s, Status: %s\n\n", resp.Name, resp.Uuid)
 
 	service_id = resp.Uuid
 }
@@ -202,7 +202,7 @@ func TestPatchService(t *testing.T) {
 		t.Errorf("Error creating service info: %v", err)
 	}
 
-	fmt.Printf("Service Name: %s\n", resp.Name)
+	fmt.Printf("Service Name: %s\n\n", resp.Name)
 }
 
 func TestDeleteService(t *testing.T) {
@@ -236,7 +236,7 @@ func TestBoardExposedServices(t *testing.T) {
 	}
 
 	for _, service := range resp {
-		fmt.Printf("Service Name: %s, Status: %s\n", service.Name, service.Uuid)
+		fmt.Printf("Service Name: %s, Status: %s\n\n", service.Name, service.Uuid)
 	}
 }
 
@@ -292,7 +292,7 @@ func TestGetPlugins(t *testing.T) {
 	}
 
 	for _, plugin := range resp {
-		t.Logf("Plugin Name: %s, Status:%s\n", plugin.Name, plugin.UUID)
+		t.Logf("Plugin Name: %s, Status:%s\n\n", plugin.Name, plugin.UUID)
 	}
 
 }
@@ -312,7 +312,7 @@ func TestGetPlugin(t *testing.T) {
 		t.Errorf("Error getting plugin info: %v", err)
 	}
 
-	fmt.Printf("Plugin Name: %s, Status: %s\n", resp.Name, resp.UUID)
+	t.Logf("Plugin Name: %s, Status: %s\n\n", resp.Name, resp.UUID)
 }
 
 // CANNOT LOAD CODE IN THE BASE CLASS
@@ -340,7 +340,7 @@ func TestCreatePlugin(t *testing.T) {
 	}
 	
 	plugin_data = resp.UUID
-	fmt.Printf("Plugin name: %v", resp.Name)
+	t.Logf("Plugin name: %v\n\n", resp.Name)
 }
 
 func TestPatchPlugin(t *testing.T) {
@@ -361,7 +361,7 @@ func TestPatchPlugin(t *testing.T) {
 		t.Errorf("Error patching plugin info: %v", err)
 	}
 
-	fmt.Printf("Plugin Name: %s\n", resp.Name)
+	t.Logf("Plugin Name: %s\n\n", resp.Name)
 }
 
 func TestInjectBoardPlugin(t *testing.T) {
@@ -433,7 +433,7 @@ func TestGetBoardPlugins(t *testing.T) {
 	}
 
 	for _, plugin := range resp {
-		fmt.Printf("Plugin Name: %s, Status: %s\n", plugin.Name, plugin.UUID)
+		t.Logf("Plugin Name: %s, Status: %s\n\n", plugin.Name, plugin.UUID)
 	}
 } 
 
