@@ -47,6 +47,41 @@ func (client *Client) GetServices() ([]services.Service, error) {
 	return result.Services, nil
 }
 
+func (client *Client) GetService(uuid string) (*services.Service, error) {
+	req, err := http.NewRequest("GET", client.Endpoint+":"+client.Port+"/v1/services/"+uuid, nil)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to create a request: %v", err)
+	}
+
+	req.Header.Set("X-Auth-Token", client.AuthToken)
+
+	resp, err := client.HTTPClient.Do(req)
+
+	if err != nil {
+		return nil, fmt.Errorf("Request failed: %v", err)
+	}
+
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+
+	if err != nil {
+		fmt.Println("Error reading response body:", err)
+	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("Unexpected status code: %d", resp.StatusCode)
+	}
+
+	result := services.Service{}
+
+	if err := json.Unmarshal([]byte(body), &result); err != nil {
+		return nil, fmt.Errorf("failed to decode response: %v", err)
+	}
+
+	return &result, nil
+
+}
 func (client *Client) CreateService(service services.Service) (*services.Service, error) {
 	jsonBody, err := json.Marshal(service)
 	if err != nil {

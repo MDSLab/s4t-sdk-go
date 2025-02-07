@@ -20,10 +20,13 @@ func (b *PluginReq) Keys() []string {
 }
 
 type Plugin struct {
-	UUID     string         `json:"uuid,omitempty"`
-	Name     string         `json:"name"`
-	Public   bool           `json:"public"`
-	Owner    string         `json:"owner"`
-	Callable bool           `json:"callable"`
-	Links    []generic.Link `json:"links,omitempty"`
+	UUID       string               `json:"uuid,omitempty"`
+	Name       string               `json:"name"`
+	Public     bool                 `json:"public"`
+	Code       string               `json:"code"`
+	Parameters runtime.RawExtension `json:"parameters,omitempty"`
+	Version    string               `json:"version,omitempty"`
+	Owner      string               `json:"owner"`
+	Callable   bool                 `json:"callable"`
+	Links      []generic.Link       `json:"links,omitempty"`
 }
