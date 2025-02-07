@@ -11,7 +11,7 @@ import (
 )
 
 func (client *Client) GetPlugins() ([]plugins.Plugin, error) {
-	req, err := http.NewRequest("GET", client.Endpoint+":"+client.Port+"/v1/boards/", nil)
+	req, err := http.NewRequest("GET", client.Endpoint+":"+client.Port+"/v1/plugins/", nil)
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to create a request: %v", err)
