@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"testing"
-
 	"github.com/MIKE9708/s4t-sdk-go/pkg/api"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/api/data/plugin"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/api/data/service"
@@ -15,25 +14,6 @@ var service_id = ""
 var board_data = ""
 var plugin_data = ""
 var f interface{}
-
-func TestGetBoardDetails(t *testing.T) {
-	c := s4t.Client{}
-	client, err := c.GetClientConnection()
-
-	if err != nil {
-		t.Errorf("Error getting connection: %v", err)
-	}	
-
-	board := "c910e7f1-74d0-4f76-ae6a-a46c1da0d92d"
-	resp, err := client.GetBoardDetail(board)
-	board_data = board	
-	if err != nil {
-		t.Errorf("Error getting board info: %v", err)
-	}
-
-	fmt.Printf("Board Name: %s, Status: %s\n\n", resp.Name, resp.Status)
-
-}
 
 func TestGetBoards(t *testing.T) {
 	c := s4t.Client{}
@@ -50,9 +30,29 @@ func TestGetBoards(t *testing.T) {
 	}
 
 	for _, board := range resp {
-		fmt.Printf("Test Get board returned Board Name: %s, Status: %s\n\n", board.Name, board.Status)
+		fmt.Printf("Test Get board returned UUID: %s  Name: %s, Status: %s\n\n", board.Uuid, board.Name, board.Status)
 	}
 }
+
+func TestGetBoardDetails(t *testing.T) {
+	c := s4t.Client{}
+	client, err := c.GetClientConnection()
+
+	if err != nil {
+		t.Errorf("Error getting connection: %v", err)
+	}	
+
+	board := "c910e7f1-74d0-4f76-ae6a-a46c1da0d92d"
+	resp, err := client.GetBoardDetail(board)
+	board_data = board	
+	if err != nil {
+		t.Errorf("Error getting board info: %v", err)
+	}
+
+	fmt.Printf("Board Name: %s, Status: %s, Location: %s\n\n", resp.Name, resp.Status, resp.Location)
+}
+
+
 
 
 

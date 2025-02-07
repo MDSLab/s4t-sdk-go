@@ -6,32 +6,28 @@ import (
 	"net/http"
 )
 
-
 type ComputeClient struct {
 	client *http.Client
-	token string
-	url string
+	token  string
+	url    string
 }
 
-
-func NewComputeClient (client *http.Client, token, url string) *ComputeClient {
-	return &ComputeClient {
+func NewComputeClient(client *http.Client, token, url string) *ComputeClient {
+	return &ComputeClient{
 		client: client,
-		token: token,
-		url: url,
+		token:  token,
+		url:    url,
 	}
-
 }
 
 type Server struct {
-	ID string `json:"id"`
-	Name string `json:"name"`
+	ID     string `json:"id"`
+	Name   string `json:"name"`
 	Status string `json:"status"`
-
 }
 
-func (c *ComputeClient) ListServers () ([]Server, error) {
-	req, err := http.NewRequest("GET", c.url + "/servers", nil)
+func (c *ComputeClient) ListServers() ([]Server, error) {
+	req, err := http.NewRequest("GET", c.url+"/servers", nil)
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to create a request: %v", err)
@@ -56,8 +52,8 @@ func (c *ComputeClient) ListServers () ([]Server, error) {
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-        return nil, fmt.Errorf("failed to decode response: %v", err)
-    }
+		return nil, fmt.Errorf("failed to decode response: %v", err)
+	}
 
-    return result.Servers, nil
-} 
+	return result.Servers, nil
+}
