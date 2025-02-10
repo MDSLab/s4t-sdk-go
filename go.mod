@@ -1,8 +1,8 @@
 module github.com/MIKE9708/s4t-sdk-go
 
-go 1.22.0
+go 1.16.0
 
-toolchain go1.23.6
+toolchain go1.16.0
 
 require (
 	gopkg.in/yaml.v3 v3.0.1
