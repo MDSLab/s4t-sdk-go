@@ -1,12 +1,10 @@
 module github.com/MIKE9708/s4t-sdk-go
 
-go 1.20.0
-
-toolchain go1.21.16
+go 1.21.13
 
 require (
 	gopkg.in/yaml.v3 v3.0.1
-	k8s.io/apimachinery v0.30.0
+	k8s.io/apimachinery v0.30.0-alpha.3
 )
 
 require (
