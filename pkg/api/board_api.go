@@ -66,6 +66,10 @@ func (client *Client) GetBoardDetail(uuid string) (*boards.Board, error) {
 
 	body, err := io.ReadAll(resp.Body)
 
+	if resp.StatusCode == http.StatusNotFound {
+		return &boards.Board{}, nil
+	}
+
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
 	}

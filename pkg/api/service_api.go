@@ -69,6 +69,11 @@ func (client *Client) GetService(uuid string) (*services.Service, error) {
 	if err != nil {
 		fmt.Println("Error reading response body:", err)
 	}
+
+	if resp.StatusCode == http.StatusNotFound {
+		return &services.Service{}, nil
+	}
+
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("Unexpected status code: %d", resp.StatusCode)
 	}
