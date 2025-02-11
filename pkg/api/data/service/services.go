@@ -15,12 +15,8 @@ type Service struct {
 
 func (b *Service) Keys() []string {
 	return []string{
-		"uuid", "code",
-		"status", "name",
-		"type", "agent",
-		"wstpun_ip", "session",
-		"fleet", "lr_version",
-		"connectivity", "links",
-		"location",
+		"name",
+		"port",
+		"protocol",
 	}
 }
