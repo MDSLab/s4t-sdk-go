@@ -3,11 +3,13 @@ package example
 import (
 	"encoding/json"
 	"fmt"
+	"testing"
+
 	"github.com/MIKE9708/s4t-sdk-go/pkg/api"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/api/data/plugin"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/api/data/service"
+	read_config "github.com/MIKE9708/s4t-sdk-go/pkg/read_conf"
 	"k8s.io/apimachinery/pkg/runtime"
-	"testing"
 )
 
 var service_id = ""
@@ -16,8 +18,12 @@ var plugin_data = ""
 var f interface{}
 
 func TestGetBoards(t *testing.T) {
-	c := s4t.Client{}
-	client, err := c.GetClientConnection()
+	authreq := read_config.FormatAuthRequ(
+		"admin",
+		"ADMIN_PASS",
+		"default",
+	)
+	client, err := s4t.GetClientConnection(*authreq)
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -35,8 +41,12 @@ func TestGetBoards(t *testing.T) {
 }
 
 func TestGetBoardDetails(t *testing.T) {
-	c := s4t.Client{}
-	client, err := c.GetClientConnection()
+	authreq := read_config.FormatAuthRequ(
+		"admin",
+		"ADMIN_PASS",
+		"default",
+	)
+	client, err := s4t.GetClientConnection(*authreq)
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -94,7 +104,7 @@ func TestCreateBoard(t *testing.T) {
 /*
 func TestPatchBoard(t *testing.T) {
 	c := s4t.Client{}
-	client, err := c.GetClientConnection()
+
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -116,7 +126,7 @@ func TestPatchBoard(t *testing.T) {
 /*
 // REQUIRE THE CORRECT ACTION IF NOT RETURN ERROR
 func TestBoardAction(t *testing.T) {
-	client, err := s4t.GetClientConnection()
+	client, err := s4t.s4t.GetClientConnection()
 
 	board := boards.Board{}
 	if err != nil {
@@ -136,8 +146,13 @@ func TestBoardAction(t *testing.T) {
 }
 */
 func TestGetService(t *testing.T) {
-	c := s4t.Client{}
-	client, err := c.GetClientConnection()
+
+	authreq := read_config.FormatAuthRequ(
+		"admin",
+		"ADMIN_PASS",
+		"default",
+	)
+	client, err := s4t.GetClientConnection(*authreq)
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -154,8 +169,13 @@ func TestGetService(t *testing.T) {
 }
 
 func TestGetServices(t *testing.T) {
-	c := s4t.Client{}
-	client, err := c.GetClientConnection()
+
+	authreq := read_config.FormatAuthRequ(
+		"admin",
+		"ADMIN_PASS",
+		"default",
+	)
+	client, err := s4t.GetClientConnection(*authreq)
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -173,8 +193,12 @@ func TestGetServices(t *testing.T) {
 }
 
 func TestCreateService(t *testing.T) {
-	c := s4t.Client{}
-	client, err := c.GetClientConnection()
+	authreq := read_config.FormatAuthRequ(
+		"admin",
+		"ADMIN_PASS",
+		"default",
+	)
+	client, err := s4t.GetClientConnection(*authreq)
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -198,8 +222,13 @@ func TestCreateService(t *testing.T) {
 }
 
 func TestPatchService(t *testing.T) {
-	c := s4t.Client{}
-	client, err := c.GetClientConnection()
+
+	authreq := read_config.FormatAuthRequ(
+		"admin",
+		"ADMIN_PASS",
+		"default",
+	)
+	client, err := s4t.GetClientConnection(*authreq)
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -219,8 +248,13 @@ func TestPatchService(t *testing.T) {
 }
 
 func TestDeleteService(t *testing.T) {
-	c := s4t.Client{}
-	client, err := c.GetClientConnection()
+
+	authreq := read_config.FormatAuthRequ(
+		"admin",
+		"ADMIN_PASS",
+		"default",
+	)
+	client, err := s4t.GetClientConnection(*authreq)
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -235,8 +269,13 @@ func TestDeleteService(t *testing.T) {
 }
 
 func TestBoardExposedServices(t *testing.T) {
-	c := s4t.Client{}
-	client, err := c.GetClientConnection()
+
+	authreq := read_config.FormatAuthRequ(
+		"admin",
+		"ADMIN_PASS",
+		"default",
+	)
+	client, err := s4t.GetClientConnection(*authreq)
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -254,8 +293,13 @@ func TestBoardExposedServices(t *testing.T) {
 }
 
 func TestRestoreBoardService(t *testing.T) {
-	c := s4t.Client{}
-	client, err := c.GetClientConnection()
+
+	authreq := read_config.FormatAuthRequ(
+		"admin",
+		"ADMIN_PASS",
+		"default",
+	)
+	client, err := s4t.GetClientConnection(*authreq)
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -270,7 +314,7 @@ func TestRestoreBoardService(t *testing.T) {
 
 /*
 func TestPerformActionOnService(t *testing.T) {
-	client, err := s4t.GetClientConnection()
+	client, err := s4t.s4t.GetClientConnection()
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -291,8 +335,13 @@ func TestPerformActionOnService(t *testing.T) {
 */
 
 func TestGetPlugins(t *testing.T) {
-	c := s4t.Client{}
-	client, err := c.GetClientConnection()
+
+	authreq := read_config.FormatAuthRequ(
+		"admin",
+		"ADMIN_PASS",
+		"default",
+	)
+	client, err := s4t.GetClientConnection(*authreq)
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -311,8 +360,13 @@ func TestGetPlugins(t *testing.T) {
 }
 
 func TestGetPlugin(t *testing.T) {
-	c := s4t.Client{}
-	client, err := c.GetClientConnection()
+
+	authreq := read_config.FormatAuthRequ(
+		"admin",
+		"ADMIN_PASS",
+		"default",
+	)
+	client, err := s4t.GetClientConnection(*authreq)
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -330,8 +384,13 @@ func TestGetPlugin(t *testing.T) {
 
 // CANNOT LOAD CODE IN THE BASE CLASS
 func TestCreatePlugin(t *testing.T) {
-	c := s4t.Client{}
-	client, err := c.GetClientConnection()
+
+	authreq := read_config.FormatAuthRequ(
+		"admin",
+		"ADMIN_PASS",
+		"default",
+	)
+	client, err := s4t.GetClientConnection(*authreq)
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -357,8 +416,13 @@ func TestCreatePlugin(t *testing.T) {
 }
 
 func TestPatchPlugin(t *testing.T) {
-	c := s4t.Client{}
-	client, err := c.GetClientConnection()
+
+	authreq := read_config.FormatAuthRequ(
+		"admin",
+		"ADMIN_PASS",
+		"default",
+	)
+	client, err := s4t.GetClientConnection(*authreq)
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -378,8 +442,13 @@ func TestPatchPlugin(t *testing.T) {
 }
 
 func TestInjectBoardPlugin(t *testing.T) {
-	c := s4t.Client{}
-	client, err := c.GetClientConnection()
+
+	authreq := read_config.FormatAuthRequ(
+		"admin",
+		"ADMIN_PASS",
+		"default",
+	)
+	client, err := s4t.GetClientConnection(*authreq)
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -400,8 +469,13 @@ func TestInjectBoardPlugin(t *testing.T) {
 }
 
 func TestDeleteBoardPlugin(t *testing.T) {
-	c := s4t.Client{}
-	client, err := c.GetClientConnection()
+
+	authreq := read_config.FormatAuthRequ(
+		"admin",
+		"ADMIN_PASS",
+		"default",
+	)
+	client, err := s4t.GetClientConnection(*authreq)
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -415,8 +489,12 @@ func TestDeleteBoardPlugin(t *testing.T) {
 }
 
 func TestDeletePLugin(t *testing.T) {
-	c := s4t.Client{}
-	client, err := c.GetClientConnection()
+	authreq := read_config.FormatAuthRequ(
+		"admin",
+		"ADMIN_PASS",
+		"default",
+	)
+	client, err := s4t.GetClientConnection(*authreq)
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
@@ -431,8 +509,12 @@ func TestDeletePLugin(t *testing.T) {
 }
 
 func TestGetBoardPlugins(t *testing.T) {
-	c := s4t.Client{}
-	client, err := c.GetClientConnection()
+	authreq := read_config.FormatAuthRequ(
+		"admin",
+		"ADMIN_PASS",
+		"default",
+	)
+	client, err := s4t.GetClientConnection(*authreq)
 
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)

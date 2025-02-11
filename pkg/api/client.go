@@ -9,6 +9,12 @@ import (
 	"time"
 )
 
+const (
+	IP        = "100.119.73.120"
+	PORT      = "8812"
+	AUTH_PORT = "5000"
+)
+
 type Client struct {
 	HTTPClient *http.Client
 	AuthToken  string
@@ -18,26 +24,15 @@ type Client struct {
 	Timeout    time.Duration
 }
 
-func (c *Client) GetClientConnection() (*Client, error) {
-	config_data, err := read_config.ReadConfiguration()
-	auth_req := read_config.FormatAuthRequ(
-		config_data.S4tAuthData.Username,
-		config_data.S4tAuthData.Password,
-		config_data.Domain.DomainName,
-	)
-	if err != nil {
-		return nil, fmt.Errorf("Error reading file: %v", err)
-	}
-
-	client := NewClient("http://" + config_data.S4tAuthData.Ip)
-	client.Port = config_data.S4tAuthData.Port
-	client.AuthPort = config_data.S4tAuthData.AuthPort
-	client.AuthToken, err = client.Authenticate(client, auth_req)
-
+func GetClientConnection(authReqData read_config.AuthRequest_1) (*Client, error) {
+	client := NewClient("http://" + IP)
+	client.Port = PORT
+	client.AuthPort = AUTH_PORT
+	token, err := client.Authenticate(client, &authReqData)
 	if err != nil {
 		return nil, fmt.Errorf("Error authenticating: %v", err)
 	}
-
+	client.AuthToken = token
 	return client, nil
 }
 
@@ -53,7 +48,6 @@ func (c *Client) Authenticate(client *Client, auth_req *read_config.AuthRequest_
 		return "", fmt.Errorf("Error marshaling to JSON: %d\n", err)
 
 	}
-
 	req, err := http.NewRequest("POST", client.Endpoint+":"+client.AuthPort+"/v3/auth/tokens", bytes.NewBuffer(jsonBody))
 
 	if err != nil {
