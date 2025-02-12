@@ -53,7 +53,7 @@ func TestGetBoardDetails(t *testing.T) {
 		t.Errorf("Error getting connection: %v", err)
 	}
 
-	board := "95bdf12d-6d70-4ecd-821a-d9a289f35383"
+	board := "361be02d-3324-4746-a8a0-0ee049ea1dad"
 	resp, err := client.GetBoardDetail(board)
 	board_data = board
 	if err != nil {
@@ -143,17 +143,13 @@ func TestBoardAction(t *testing.T) {
 	}
 
 	action_data := map[string]interface{}{
-		"uuid":         "95bdf12d-6d70-4ecd-821a-d9a289f35383",
-		"name":         "demo_docker",
-		"service_list": "be86610b-d401-416b-ac11-7c1183019830",
+		"action": "ServiceEnable",
 	}
-
-	err = client.PerformBoardAction("6ba7b810-9dad-11d1-80b4-00c04fd430c9", action_data)
+	err = client.PerformBoardAction("6ba7b810-9dad-11d1-80b4-00c04fd430c9", service_id, action_data)
 
 	if err != nil {
 		t.Errorf("Error creating board: %v", err)
 	}
-	t.Logf("OKOKOKOOOKOKO\n\n")
 }
 
 func TestGetService(t *testing.T) {
@@ -466,10 +462,12 @@ func TestInjectBoardPlugin(t *testing.T) {
 	}
 
 	data := map[string]interface{}{
-		"plugin": plugin_data,
+		// "plugin": plugin_data,
+		"uuid":       "5a0b6644-7442-4d6c-9b88-4577f14faea6",
+		"board_list": "e2b967e7-f643-4840-b67e-489524cb2ee5",
+		"name":       "test-plugin-generic-patched",
 		// "onboot": "yes",
 		// "force": "yes",
-
 	}
 
 	err = client.InjectPLuginBoard(board_data, data)

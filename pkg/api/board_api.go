@@ -344,14 +344,14 @@ func (client *Client) PatchBoard(uuid string, data map[string]interface{}) (*boa
 	return &result, nil
 }
 
-func (client *Client) PerformBoardAction(uuid string, action map[string]interface{}) error {
+func (client *Client) PerformBoardAction(uuid_board string, uuid_service string, action map[string]interface{}) error {
 	jsonBody, err := json.Marshal(action)
 
 	if err != nil {
 		return fmt.Errorf("Error marshalling JSON: %v", err)
 	}
 
-	req, err := http.NewRequest("POST", client.Endpoint+":"+client.Port+"/v1/boards/"+uuid+"/services/enableservice", bytes.NewBuffer(jsonBody))
+	req, err := http.NewRequest("POST", client.Endpoint+":"+client.Port+"/v1/boards/"+uuid_board+"/services/"+uuid_service+"/enableservice", bytes.NewBuffer(jsonBody))
 
 	if err != nil {
 		return fmt.Errorf("failed to create a request: %v", err)
@@ -361,10 +361,6 @@ func (client *Client) PerformBoardAction(uuid string, action map[string]interfac
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := client.HTTPClient.Do(req)
-	log.Printf("\n\n#######################\n\n")
-	log.Println(resp)
-	log.Println(req)
-	log.Printf("\n\n#######################\n\n")
 	if err != nil {
 		return fmt.Errorf("Request failed: %v", err)
 	}
