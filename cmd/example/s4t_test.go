@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/MIKE9708/s4t-sdk-go/pkg/api"
+	boards "github.com/MIKE9708/s4t-sdk-go/pkg/api/data/board"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/api/data/plugin"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/api/data/service"
 	read_config "github.com/MIKE9708/s4t-sdk-go/pkg/read_conf"
@@ -59,48 +60,52 @@ func TestGetBoardDetails(t *testing.T) {
 		t.Errorf("Error getting board info: %v", err)
 	}
 
-	fmt.Printf("Board Name: %s, Status: %s, Location: %s\n\n", resp.Name, resp.Status, resp.Location)
+	fmt.Printf("Board Name: %s, Status: %s\n\n", resp.Name, resp.Status)
 }
 
-/*
 func TestCreateBoard(t *testing.T) {
-	auth_req, err := read_config.ReadConfiguration()
-
+	authreq := read_config.FormatAuthRequ(
+		"admin",
+		"ADMIN_PASS",
+		"default",
+	)
+	client, err := s4t.GetClientConnection(*authreq)
 	if err != nil {
 		t.Errorf("Error reading file: %v", err)
 	}
 
-	client := s4t.NewClient("http://" + auth_req.S4tAuthData.Ip)
-	client.AuthToken = auth_req.S4tAuthData.Token
-
 	test_board := boards.Board{
-		Uuid: "6ba7b810-9dad-11d1-80b4-00c04fd430c9",
-		Code: "demo-test-generic",
-		Status: "offline",
-		Name: "s4t-sdk-testing-board",
+		Code: "erjfiorejfiojre",
+		Name: "jernorefo",
 		Type: "gateway",
-		Agent: "wagent1",
-		// Wstunip: "172.17.4.2",
-		Session: "7712408803711087",
-		Fleet: nil,
-		LRversion: "0.4.17",
-		Connectivity: boards.Connectivity{},
-		Location: []boards.Location{
+		Location: []*boards.Location{
 			{
-			Longitude: "1.0",
-			Latitude: "1.0",
-			Altitude: "1.0",
-		}},
+				Longitude: "1.0",
+				Latitude:  "1.0",
+				Altitude:  "1.0",
+			},
+		},
 	}
 
-	_, err = test_board.CreateBoard(client, test_board)
+	// board_data := map[string]interface{}{
+	// 	"code": "demo-test-generic",
+	// 	"name": "s4t-demo",
+	// 	"type": "gateway",
+	// 	"location": []map[string]string{{
+	// 		"longitude": "1.0",
+	// 		"latitude":  "1.0",
+	// 		"altitude":  "1.0",
+	// 	}},
+	// }
+
+	_, err = client.CreateBoard(test_board)
 
 	if err != nil {
 		t.Errorf("Error creating board: %v", err)
 	}
 
 }
-*/
+
 /*
 func TestPatchBoard(t *testing.T) {
 	c := s4t.Client{}
@@ -122,29 +127,35 @@ func TestPatchBoard(t *testing.T) {
 
 	fmt.Printf("Board Name: %s, Status: %s\n\n", resp.Name, resp.Code)
 }
+*/
 
-/*
 // REQUIRE THE CORRECT ACTION IF NOT RETURN ERROR
 func TestBoardAction(t *testing.T) {
-	client, err := s4t.s4t.GetClientConnection()
+	authreq := read_config.FormatAuthRequ(
+		"admin",
+		"ADMIN_PASS",
+		"default",
+	)
+	client, err := s4t.GetClientConnection(*authreq)
 
-	board := boards.Board{}
 	if err != nil {
 		t.Errorf("Error getting connection: %v", err)
 	}
 
 	action_data := map[string]interface{}{
-        "action": "test-action",
-		"parameters": map[string] interface{} {},
+		"uuid":         "95bdf12d-6d70-4ecd-821a-d9a289f35383",
+		"name":         "demo_docker",
+		"service_list": "be86610b-d401-416b-ac11-7c1183019830",
 	}
 
-	err = boards.PerformBoardAction(client, "6ba7b810-9dad-11d1-80b4-00c04fd430c9", action_data)
+	err = client.PerformBoardAction("6ba7b810-9dad-11d1-80b4-00c04fd430c9", action_data)
 
 	if err != nil {
 		t.Errorf("Error creating board: %v", err)
 	}
+	t.Logf("OKOKOKOOOKOKO\n\n")
 }
-*/
+
 func TestGetService(t *testing.T) {
 
 	authreq := read_config.FormatAuthRequ(
@@ -468,6 +479,28 @@ func TestInjectBoardPlugin(t *testing.T) {
 	}
 }
 
+func TestGetBoardPlugins(t *testing.T) {
+	authreq := read_config.FormatAuthRequ(
+		"admin",
+		"ADMIN_PASS",
+		"default",
+	)
+	client, err := s4t.GetClientConnection(*authreq)
+
+	if err != nil {
+		t.Errorf("Error getting connection: %v", err)
+	}
+
+	resp, err := client.GetBoardPlugins(board_data)
+
+	if err != nil {
+		t.Errorf("Error getting plugin info: %v", err)
+	}
+
+	for _, plugin := range resp {
+		t.Logf("\n\n\nBoard Plugin UUID: %s\n\n", plugin.Plugin)
+	}
+}
 func TestDeleteBoardPlugin(t *testing.T) {
 
 	authreq := read_config.FormatAuthRequ(
@@ -506,29 +539,6 @@ func TestDeletePLugin(t *testing.T) {
 		t.Errorf("Error deleting plugin: %v", err)
 	}
 
-}
-
-func TestGetBoardPlugins(t *testing.T) {
-	authreq := read_config.FormatAuthRequ(
-		"admin",
-		"ADMIN_PASS",
-		"default",
-	)
-	client, err := s4t.GetClientConnection(*authreq)
-
-	if err != nil {
-		t.Errorf("Error getting connection: %v", err)
-	}
-
-	resp, err := client.GetBoardPlugins(board_data)
-
-	if err != nil {
-		t.Errorf("Error getting plugin info: %v", err)
-	}
-
-	for _, plugin := range resp {
-		t.Logf("Plugin Name: %s, Status: %s\n\n", plugin.Name, plugin.UUID)
-	}
 }
 
 /*

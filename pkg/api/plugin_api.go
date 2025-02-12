@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	boards "github.com/MIKE9708/s4t-sdk-go/pkg/api/data/board"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/api/data/plugin"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/utils"
 	"io"
@@ -199,7 +200,7 @@ func (client *Client) PacthPlugin(uuid string, data map[string]interface{}) (*pl
 	return &result, nil
 }
 
-func (client *Client) GetBoardPlugins(board_id string) ([]plugins.Plugin, error) {
+func (client *Client) GetBoardPlugins(board_id string) ([]boards.InjectionPlugin, error) {
 	req, err := http.NewRequest("GET", client.Endpoint+":"+client.Port+"/v1/boards/"+board_id+"/plugins", nil)
 
 	if err != nil {
@@ -225,15 +226,14 @@ func (client *Client) GetBoardPlugins(board_id string) ([]plugins.Plugin, error)
 		return nil, fmt.Errorf("Unexpected status code: %d", resp.StatusCode)
 	}
 
-	var result struct {
-		Plugins []plugins.Plugin `json:"plugins"`
+	var response struct {
+		Injections []boards.InjectionPlugin `json:"injections"`
 	}
-
-	if err := json.Unmarshal([]byte(body), &result); err != nil {
+	if err := json.Unmarshal([]byte(body), &response); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %v", err)
 	}
 
-	return result.Plugins, nil
+	return response.Injections, nil
 }
 
 func (client *Client) InjectPLuginBoard(board_id string, data map[string]interface{}) error {

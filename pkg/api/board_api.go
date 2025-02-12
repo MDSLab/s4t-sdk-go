@@ -4,10 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
+	"log"
+	"net/http"
+
 	"github.com/MIKE9708/s4t-sdk-go/pkg/api/data/board"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/utils"
-	"io"
-	"net/http"
 )
 
 func (client *Client) ListBoards() ([]boards.Board, error) {
@@ -230,6 +232,7 @@ func (client *Client) CreateBoard(board boards.Board) (*boards.Board, error) {
 		return nil, fmt.Errorf("Error marshalling JSON: %v", err)
 
 	}
+	log.Println(string(jsonBody))
 	req, err := http.NewRequest("POST", client.Endpoint+":"+client.Port+"/v1/boards/", bytes.NewBuffer(jsonBody))
 
 	if err != nil {
@@ -254,7 +257,6 @@ func (client *Client) CreateBoard(board boards.Board) (*boards.Board, error) {
 	}
 
 	result := boards.Board{}
-
 	if err := json.Unmarshal([]byte(body), &result); err != nil {
 		return nil, fmt.Errorf("failed to decode response: %v", err)
 	}
@@ -349,7 +351,7 @@ func (client *Client) PerformBoardAction(uuid string, action map[string]interfac
 		return fmt.Errorf("Error marshalling JSON: %v", err)
 	}
 
-	req, err := http.NewRequest("POST", client.Endpoint+":"+client.Port+"/v1/boards/"+uuid+"/action", bytes.NewBuffer(jsonBody))
+	req, err := http.NewRequest("POST", client.Endpoint+":"+client.Port+"/v1/boards/"+uuid+"/services/enableservice", bytes.NewBuffer(jsonBody))
 
 	if err != nil {
 		return fmt.Errorf("failed to create a request: %v", err)
@@ -359,7 +361,10 @@ func (client *Client) PerformBoardAction(uuid string, action map[string]interfac
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := client.HTTPClient.Do(req)
-
+	log.Printf("\n\n#######################\n\n")
+	log.Println(resp)
+	log.Println(req)
+	log.Printf("\n\n#######################\n\n")
 	if err != nil {
 		return fmt.Errorf("Request failed: %v", err)
 	}

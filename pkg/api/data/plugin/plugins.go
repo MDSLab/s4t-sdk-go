@@ -30,3 +30,8 @@ type Plugin struct {
 	Callable   bool                 `json:"callable"`
 	Links      []generic.Link       `json:"links,omitempty"`
 }
+
+// Horrible
+type ResponsePluginBoard struct {
+	Plugin string `json:"plugin,omitempty"`
+}

@@ -4,23 +4,24 @@ import (
 	"encoding/json"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/api/data/generic"
 	"k8s.io/apimachinery/pkg/runtime"
+	"time"
 )
 
 type Board struct {
-	Uuid    string               `json:"uuid"`
-	Code    string               `json:"code"`
-	Status  string               `json:"status"`
-	Name    string               `json:"name"`
-	Type    string               `json:"type"`
-	Agent   string               `json:"agent"`
-	Wstunip string               `json:"wstun_ip,omitempty"`
-	Session string               `json:"session"`
-	Fleet   runtime.RawExtension `json:"fleet,omitempty"`
+	Uuid    string                `json:"uuid,omitempty"`
+	Code    string                `json:"code"`
+	Status  string                `json:"status,omitempty"`
+	Name    string                `json:"name"`
+	Type    string                `json:"type,omitempty"`
+	Agent   string                `json:"agent,omitempty"`
+	Wstunip string                `json:"wstun_ip,omitempty"`
+	Session string                `json:"session,omitempty"`
+	Fleet   *runtime.RawExtension `json:"fleet,omitempty"`
 	//interface{} `json:"fleet"`
-	LRversion    string         `json:"lr_version"`
-	Connectivity Connectivity   `json:"connectivity"`
-	Links        []generic.Link `json:"links,omitempty"`
-	Location     []Location     `json:"location"`
+	LRversion    string          `json:"lr_version,omitempty"`
+	Connectivity *Connectivity   `json:"connectivity,omitempty"`
+	Links        []*generic.Link `json:"links,omitempty"`
+	Location     []*Location     `json:"location"`
 }
 
 func (b *Board) Keys() []string {
@@ -36,9 +37,9 @@ func (b *Board) Keys() []string {
 }
 
 type Connectivity struct {
-	Iface   string `json:"iface"`
-	LocalIP string `json:"local_ip"`
-	MAC     string `json:"mac"`
+	Iface   string `json:"iface,omitempty"`
+	LocalIP string `json:"local_ip,omitempty"`
+	MAC     string `json:"mac,omitempty"`
 }
 
 func (c Connectivity) MarshalJSON() ([]byte, error) {
@@ -50,10 +51,10 @@ func (c Connectivity) MarshalJSON() ([]byte, error) {
 }
 
 type Location struct {
-	Longitude string `json:"longitude"`
-	Latitude  string `json:"latitude"`
-	Altitude  string `json:"altitude"`
-	UpdatedAt []byte `json:"updated_at"`
+	Longitude string     `json:"longitude"`
+	Latitude  string     `json:"latitude"`
+	Altitude  string     `json:"altitude"`
+	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 }
 
 type Action struct {
@@ -62,4 +63,12 @@ type Action struct {
 
 type Sensors struct {
 	Name string
+}
+
+type InjectionPlugin struct {
+	Plugin    string     `json:"plugin"`
+	Status    string     `json:"status"`
+	OnBoot    bool       `json:"onboot"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 }
