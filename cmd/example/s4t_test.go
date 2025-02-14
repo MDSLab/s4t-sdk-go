@@ -130,7 +130,7 @@ func TestPatchBoard(t *testing.T) {
 */
 
 // REQUIRE THE CORRECT ACTION IF NOT RETURN ERROR
-func TestBoardAction(t *testing.T) {
+func TestBoardActionEnable(t *testing.T) {
 	authreq := read_config.FormatAuthRequ(
 		"admin",
 		"ADMIN_PASS",
@@ -145,7 +145,29 @@ func TestBoardAction(t *testing.T) {
 	action_data := map[string]interface{}{
 		"action": "ServiceEnable",
 	}
-	err = client.PerformBoardAction("6ba7b810-9dad-11d1-80b4-00c04fd430c9", service_id, action_data)
+	err = client.PerformBoardAction("s4t-demo", "ssh", action_data)
+
+	if err != nil {
+		t.Errorf("Error creating board: %v", err)
+	}
+}
+
+func TestBoardActionDisable(t *testing.T) {
+	authreq := read_config.FormatAuthRequ(
+		"admin",
+		"ADMIN_PASS",
+		"default",
+	)
+	client, err := s4t.GetClientConnection(*authreq)
+
+	if err != nil {
+		t.Errorf("Error getting connection: %v", err)
+	}
+
+	action_data := map[string]interface{}{
+		"action": "ServiceDisable",
+	}
+	err = client.PerformBoardAction("s4t-demo", "ssh", action_data)
 
 	if err != nil {
 		t.Errorf("Error creating board: %v", err)
@@ -153,7 +175,6 @@ func TestBoardAction(t *testing.T) {
 }
 
 func TestGetService(t *testing.T) {
-
 	authreq := read_config.FormatAuthRequ(
 		"admin",
 		"ADMIN_PASS",
@@ -406,8 +427,8 @@ func TestCreatePlugin(t *testing.T) {
 	err = json.Unmarshal([]byte(`{}`), &f)
 
 	plugin_req := plugins.PluginReq{
-		Name:       "Test-plugin-s4t",
-		Parameters: runtime.RawExtension{Raw: []byte(`{}`)},
+		Name:       "Test-plugin-s4t-2",
+		Parameters: runtime.RawExtension{Raw: []byte(`{"name":"ciao"}`)},
 		Code:       "from iotronic_lightningrod.plugins import Plugin\n\nfrom oslo_log import log as logging\n\nLOG = logging.getLogger(__name__)\n\n\n# User imports\n\n\nclass Worker(Plugin.Plugin):\n    def __init__(self, uuid, name, q_result, params=None):\n        super(Worker, self).__init__(uuid, name, q_result, params)\n\n    def run(self):\n        LOG.info(\"Input parameters: \" + str(self.params))\n        LOG.info(\"Plugin \" + self.name + \" process completed!\")\n        self.q_result.put(\"ZERO RESULT\")",
 		// Description: "A generic test plugin",
 	}
@@ -462,10 +483,10 @@ func TestInjectBoardPlugin(t *testing.T) {
 	}
 
 	data := map[string]interface{}{
-		// "plugin": plugin_data,
-		"uuid":       "5a0b6644-7442-4d6c-9b88-4577f14faea6",
-		"board_list": "e2b967e7-f643-4840-b67e-489524cb2ee5",
-		"name":       "test-plugin-generic-patched",
+		"plugin": plugin_data,
+		// "uuid":       "5a0b6644-7442-4d6c-9b88-4577f14faea6",
+		// "board_list": "e2b967e7-f643-4840-b67e-489524cb2ee5",
+		// "name":       "test-plugin-generic-patched",
 		// "onboot": "yes",
 		// "force": "yes",
 	}

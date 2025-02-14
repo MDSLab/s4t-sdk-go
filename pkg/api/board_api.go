@@ -350,8 +350,7 @@ func (client *Client) PerformBoardAction(uuid_board string, uuid_service string,
 	if err != nil {
 		return fmt.Errorf("Error marshalling JSON: %v", err)
 	}
-
-	req, err := http.NewRequest("POST", client.Endpoint+":"+client.Port+"/v1/boards/"+uuid_board+"/services/"+uuid_service+"/enableservice", bytes.NewBuffer(jsonBody))
+	req, err := http.NewRequest("POST", client.Endpoint+":"+client.Port+"/v1/boards/"+uuid_board+"/services/"+uuid_service+"/action", bytes.NewBuffer(jsonBody))
 
 	if err != nil {
 		return fmt.Errorf("failed to create a request: %v", err)
@@ -361,8 +360,8 @@ func (client *Client) PerformBoardAction(uuid_board string, uuid_service string,
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := client.HTTPClient.Do(req)
-	if err != nil {
-		return fmt.Errorf("Request failed: %v", err)
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("Unexpected status code: %d", resp.StatusCode)
 	}
 
 	defer resp.Body.Close()

@@ -4,11 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
+	"log"
+	"net/http"
+
 	boards "github.com/MIKE9708/s4t-sdk-go/pkg/api/data/board"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/api/data/plugin"
 	"github.com/MIKE9708/s4t-sdk-go/pkg/utils"
-	"io"
-	"net/http"
 )
 
 func (client *Client) GetPlugins() ([]plugins.Plugin, error) {
@@ -187,7 +189,7 @@ func (client *Client) PacthPlugin(uuid string, data map[string]interface{}) (*pl
 
 	body, err := io.ReadAll(resp.Body)
 
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode != http.StatusUnprocessableEntity {
 		return nil, fmt.Errorf("Unexpected status code: %d", resp.StatusCode)
 	}
 
@@ -238,11 +240,12 @@ func (client *Client) GetBoardPlugins(board_id string) ([]boards.InjectionPlugin
 
 func (client *Client) InjectPLuginBoard(board_id string, data map[string]interface{}) error {
 	jsonBody, err := json.Marshal(data)
-
 	if err != nil {
 		return fmt.Errorf("Error marshalling JSON: %v", err)
 
 	}
+
+	log.Println(string(jsonBody))
 	req, err := http.NewRequest("PUT", client.Endpoint+":"+client.Port+"/v1/boards/"+board_id+"/plugins/", bytes.NewBuffer(jsonBody))
 
 	if err != nil {
@@ -260,7 +263,7 @@ func (client *Client) InjectPLuginBoard(board_id string, data map[string]interfa
 
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode <= http.StatusOK || resp.StatusCode >= http.StatusMultipleChoices {
 		return fmt.Errorf("Unexpected status code: %d", resp.StatusCode)
 	}
 
