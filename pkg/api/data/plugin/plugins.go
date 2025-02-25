@@ -1,7 +1,7 @@
 package plugins
 
 import (
-	"github.com/MIKE9708/s4t-sdk-go/pkg/api/data/generic"
+	"github.com/MDSLab/s4t-sdk-go/pkg/api/data/generic"
 	"k8s.io/apimachinery/pkg/runtime"
 )
 
