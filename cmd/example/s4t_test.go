@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/MIKE9708/s4t-sdk-go/pkg/api"
-	boards "github.com/MIKE9708/s4t-sdk-go/pkg/api/data/board"
-	"github.com/MIKE9708/s4t-sdk-go/pkg/api/data/plugin"
-	"github.com/MIKE9708/s4t-sdk-go/pkg/api/data/service"
-	read_config "github.com/MIKE9708/s4t-sdk-go/pkg/read_conf"
+	"github.com/MDSLab/s4t-sdk-go/pkg/api"
+	boards "github.com/MDSLab/s4t-sdk-go/pkg/api/data/board"
+	"github.com/MDSLab/s4t-sdk-go/pkg/api/data/plugin"
+	"github.com/MDSLab/s4t-sdk-go/pkg/api/data/service"
+	read_config "github.com/MDSLab/s4t-sdk-go/pkg/read_conf"
 	"k8s.io/apimachinery/pkg/runtime"
 )
 
