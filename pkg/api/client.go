@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/MIKE9708/s4t-sdk-go/pkg/read_conf"
+	"github.com/MDSLab/s4t-sdk-go/pkg/read_conf"
 	"net/http"
 	"time"
 )
