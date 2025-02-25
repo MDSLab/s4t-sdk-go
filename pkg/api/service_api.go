@@ -7,9 +7,9 @@ import (
 	"io"
 	"net/http"
 
-	boards "github.com/MIKE9708/s4t-sdk-go/pkg/api/data/board"
-	services "github.com/MIKE9708/s4t-sdk-go/pkg/api/data/service"
-	"github.com/MIKE9708/s4t-sdk-go/pkg/utils"
+	boards "github.com/MDSLab/s4t-sdk-go/pkg/api/data/board"
+	services "github.com/MDSLab/s4t-sdk-go/pkg/api/data/service"
+	"github.com/MDSLab/s4t-sdk-go/pkg/utils"
 )
 
 func (client *Client) GetServices() ([]services.Service, error) {
