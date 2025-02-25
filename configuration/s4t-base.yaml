@@ -1,5 +1,5 @@
 s4t-auth-data:
-  ip: "100.119.73.120"
+  ip: "127.0.0.1"
   port: 8812
   auth_port: 5000
   username: admin
