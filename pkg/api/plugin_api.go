@@ -8,9 +8,9 @@ import (
 	"log"
 	"net/http"
 
-	boards "github.com/MIKE9708/s4t-sdk-go/pkg/api/data/board"
-	"github.com/MIKE9708/s4t-sdk-go/pkg/api/data/plugin"
-	"github.com/MIKE9708/s4t-sdk-go/pkg/utils"
+	boards "github.com/MDSLab/s4t-sdk-go/pkg/api/data/board"
+	"github.com/MDSLab/s4t-sdk-go/pkg/api/data/plugin"
+	"github.com/MDSLab/s4t-sdk-go/pkg/utils"
 )
 
 func (client *Client) GetPlugins() ([]plugins.Plugin, error) {
