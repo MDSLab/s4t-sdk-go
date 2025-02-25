@@ -8,8 +8,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/MIKE9708/s4t-sdk-go/pkg/api/data/board"
-	"github.com/MIKE9708/s4t-sdk-go/pkg/utils"
+	"github.com/MDSLab/s4t-sdk-go/pkg/api/data/board"
+	"github.com/MDSLab/s4t-sdk-go/pkg/utils"
 )
 
 func (client *Client) ListBoards() ([]boards.Board, error) {
